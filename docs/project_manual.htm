@@ -14,7 +14,7 @@
 <div class="content">
 <h1><a name="top" />Project Base User Manual</h1>
 
-<p class="headerinfo">Written by Greyscale & Richard Helgeby</p>
+<p class="headerinfo">Written by Greyscale &amp; Richard Helgeby</p>
 <p class="headerinfo">Manual last modified: 2010.2.13</p>
 
 <h2>Table of Contents</h2>
@@ -23,30 +23,36 @@
 	<li>
 		<a href="#1">Introduction</a>
 		<ol>
-            <li><a href="#1.1">Terminology</a></li>
-            <ol>
-                <li><a href="#1.1.1">Manager</a></li>
-                <li><a href="#1.1.2">Library (lib)</a></li>
-                <li><a href="#1.1.3">Module</a></li>
-            </ol>
+            <li>
+                <a href="#1.1">Terminology</a>
+                <ol>
+                    <li><a href="#1.1.1">Manager</a></li>
+                    <li><a href="#1.1.2">Library (lib)</a></li>
+                    <li><a href="#1.1.3">Module</a></li>
+                </ol>
+            </li>
+            
             <li><a href="#1.2">Why use this?</a></li>
-            <li><a href="#1.3">Stock Components</a></li>
-            <ol>
-                <li><a href="#1.3.1">Module Manager</a></li>
-                <li><a href="#1.3.2">Event Manager</a></li>
-                <li><a href="#1.3.3">Config Manager</a></li>
-                <li><a href="#1.3.4">Translations Manager</a></li>
-                <li><a href="#1.3.5">Log Manager</a></li>
-                <li><a href="#1.3.6">Access Manager</a></li>
-            </ol>
+            
+            <li>
+                <a href="#1.3">Stock Components</a>
+                <ol>
+                    <li><a href="#1.3.1">Module Manager</a></li>
+                    <li><a href="#1.3.2">Event Manager</a></li>
+                    <li><a href="#1.3.3">Config Manager</a></li>
+                    <li><a href="#1.3.4">Translations Manager</a></li>
+                    <li><a href="#1.3.5">Log Manager</a></li>
+                    <li><a href="#1.3.6">Access Manager</a></li>
+                </ol>
+            </li>
+            
 			<li><a href="#1.4">Credits</a></li>
 		</ol>
 	</li>
 	
 	<li>
 		<a href="#2">Setting up your project</a>
-		<ol>
-		</ol>
+        <p>Blah</p>
 	</li>
 	
 	<li>
@@ -73,35 +79,28 @@
 
 <h6><a name="1.1.1" />Manager</h6>
 <p><strong>Examples: Module Manager, modulemanager.inc</strong></p>
-<p>Managers are components of the project base that deal with all modules by storing data for each one, or creating things based off of
-modules.<br />
-<strong>Examples:</strong>
-<ol>
-    <li>Module Manager - Self explanatory.</li>
-    <li>Event Manager - Manages events for each module.</li>
-    <li>Access Manager - Creates cvars and admin groups for each module.</li>
-</ol>
-</p>
+<p>Managers are components of the project base that deal with all modules by storing data for each one, or creating things based off of modules.</p>
+
+<p><strong>Examples:</strong></p>
+	<blockquote><p> Module Manager - Self explanatory.<br />
+                    Event Manager - Manages events for each module.<br />
+                    Access Manager - Creates cvars and admin groups for each module.</p></blockquote>
 
 <h6><a name="1.1.2" />Library (lib)</h6>
-<p><strong>Examples: [blank]</strong></p>
+<p><strong>Examples: Weapon Lib, weaponlib.inc</strong></p>
 <p>Libraries are components of the project base that simply contain a ready-to-use API.  These don't depend on any modules or contain any events.  Modules should use this, not
-vice versa.<br />
-<strong>Examples:</strong>
-<ol>
-    <li>Weapons Library (weaponslib.inc) -  A set of functions designed to deal with weapons.</li>
-</ol>
-</p>
+vice versa.</p>
+
+<p><strong>Examples:</strong></p>
+	<blockquote><p>Weapon Library (weaponlib.inc) -  A set of functions designed to deal with weapons.</p></blockquote>
 
 <h6><a name="1.1.3" />Module</h6>
 <p><strong>Examples: Strip Objectives, stripobjectives.inc</strong></p>
-<p>Modules are components of the project that complete a specific task in-game. These module can easily be managed with the base command. <-- [LINK THIS]
-That is unless the module is set to be hidden.  These are usually modules that are required for the plugin to function correctly.<br />
-<strong>Examples:</strong>
-<ol>
- <li>Strip Objectives - Simply included into your project to have your plugin support stripping objectives from the map.</li>
-</ol>
-</p>
+<p>Modules are components of the project that complete a specific task in-game. These module can easily be managed with the base command. &lt;-- [LINK THIS]
+That is unless the module is set to be hidden.  These are usually modules that are required for the plugin to function correctly.</p>
+
+<p><strong>Examples:</strong></p>
+	<blockquote><p>Strip Objectives - Simply included into your project to have your plugin support stripping objectives from the map.</p></blockquote>
 
 <h3><a name="1.2" />1.2 Why use this?</h3>
 <p>The answer to this is pretty simple; a lot of the work is done for you!  In big plugins, entropy will inevitably stomp through it.
@@ -113,16 +112,15 @@ that these are all completely independent of each other.  You can pick and choos
 If your plugin isn't big enough to fully appreciate the benefits of the log manager, then don't include it in your project.  Having it
 would just be increasing the plugin size and compilation time.  This modularity is a benefit in itself.  Two plugins using the project
 base can easily swap modules, instead of coding the exact same thing twice.  Simply place the file, include it, and forward the plugin start
-callback.  Your plugin just inherited a new feature with 5 minutes of work.  Lets recall some reasons why you should use the project base:
-<ol>
-    <li><strong>The work is done for you.</strong></li>
-    <li><strong>Keeps your source code organized.</strong></li>
-    <li><strong>Always expanding with new managers and libraries to make coding even easier.</strong></li>
-    <li><strong>Pick and choose your needs.</strong></li>
-    <li><strong>Module sharing.</strong></li>
-    <li><strong>Easier debugging.</strong></li>
-</ol>
-</p>
+callback.  Your plugin just inherited a new feature with 5 minutes of work.</p>
+
+<p>Lets recall some reasons why you should use the project base:</p>
+    <blockquote><p><strong> 1. The work is done for you.<br />
+                            2. Keeps your source code organized.<br />
+                            3. Always expanding with new managers and libraries to make coding even easier.<br />
+                            4. Pick and choose your needs.<br />
+                            5. Module sharing.<br />
+                            6. Easier debugging.</strong></p></blockquote>
 
 <h3><a name="1.3" />1.2 Stock Components</h3>
 <p>About</p>
@@ -242,8 +240,9 @@ project base.  Here lies the central API for loading and managing your project's
 <p>Browseable source code repositories: <a href="http://link">Googe Code Repository</a></p>
 
 
-<p><a href="http://validator.w3.org/check?uri=referer"><img src="http://www.w3.org/Icons/valid-xhtml10"
-height="31" width="88" alt="Valid XHTML 1.0 Strict" class="noborder" /></a></p>
+<p><a href="http://validator.w3.org/check?uri=referer"><img
+        src="http://www.w3.org/Icons/valid-xhtml10-blue"
+        alt="Valid XHTML 1.0 Strict" height="31" width="88" /></a></p>
 
 <!-- Templates:
 <h4><a name="a" /></h4>
