@@ -85,14 +85,31 @@ new Handle:g_hEventModuleCache[ProjectEvents];
 EventMgr_OnPluginStart()
 {
     // Hook events to manage and forward to modules.
-    HookEvent("round_start", GameEvent_RoundStart);
-    HookEvent("round_freeze_end", GameEvent_RoundFreezeEnd);
-    HookEvent("round_end", GameEvent_RoundEnd);
-    HookEvent("player_spawn", GameEvent_PlayerSpawn);
-    HookEvent("player_hurt", GameEvent_PlayerHurt);
-    HookEvent("player_death", GameEvent_PlayerDeath);
-    HookEvent("player_jump", GameEvent_PlayerJump);
-    HookEvent("weapon_fire", GameEvent_WeaponFire);
+    
+    // CS:S events.
+    #if defined PROJECT_GAME_CSS
+        HookEvent("round_start", GameEvent_RoundStart);
+        HookEvent("round_freeze_end", GameEvent_RoundFreezeEnd);
+        HookEvent("round_end", GameEvent_RoundEnd);
+        HookEvent("player_spawn", GameEvent_PlayerSpawn);
+        HookEvent("player_hurt", GameEvent_PlayerHurt);
+        HookEvent("player_death", GameEvent_PlayerDeath);
+        HookEvent("player_jump", GameEvent_PlayerJump);
+        HookEvent("weapon_fire", GameEvent_WeaponFire);
+    #endif
+    
+    // TF2 events.
+    #if defined PROJECT_GAME_TF2
+    
+    #endif
+    
+    // L4D events.
+    #if defined PROJECT_GAME_L4D
+    #endif
+    
+    // L4D2 events.
+    #if defined PROJECT_GAME_L4D2
+    #endif
     
     // Allocate 1 index for the data we want to store for each module.
     ModuleMgr_Allocate(1, g_iEMAllocatedIndexes);
@@ -450,8 +467,10 @@ stock EventMgr_WriteFuncValue(Module:module, ProjectEvents:event, Function:func)
 }
 
 // **********************************************
-//             Game Event Callbacks
+//           CS:S Game Event Callbacks
 // **********************************************
+
+#if defined PROJECT_GAME_CSS
 
 /**
  * Round has started.
@@ -650,3 +669,5 @@ public GameEvent_WeaponFire(Handle:event, const String:name[], bool:dontBroadcas
     EventMgr_Forward(Event_WeaponEntityFire, eventdata2, sizeof(eventdata2), sizeof(eventdata2[]), eventdatatypes2);
     */
 }
+
+#endif

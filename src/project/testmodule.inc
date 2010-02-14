@@ -66,10 +66,16 @@ public TestModule_OnPluginStart()
         
         // Now register the events we're going to use.
         #if defined EVENT_MANAGER
-            EventMgr_RegisterEvent(g_iTestModules[x], Event_RoundStart, "TestModule_OnRoundStart");
-            //EventMgr_RegisterEvent(g_iTestModules[x], Event_OnMapStart, "TestModule_OnMapStart");
-            EventMgr_RegisterEvent(g_iTestModules[x], Event_PlayerSpawn, "TestModule_OnPlayerSpawn");
-            EventMgr_RegisterEvent(g_iTestModules[x], Event_PlayerHurt, "TestModule_OnPlayerHurt");    
+            EventMgr_RegisterEvent(g_iTestModules[x], Event_OnClientPutInServer, "TestModule_OnClientPutInServer");
+            EventMgr_RegisterEvent(g_iTestModules[x], Event_OnClientDisconnect, "TestModule_OnClientDisconnect");
+            
+            #if defined PROJECT_GAME_CSS
+                EventMgr_RegisterEvent(g_iTestModules[x], Event_RoundStart, "TestModule_OnRoundStart");
+                //EventMgr_RegisterEvent(g_iTestModules[x], Event_OnMapStart, "TestModule_OnMapStart");
+                EventMgr_RegisterEvent(g_iTestModules[x], Event_PlayerSpawn, "TestModule_OnPlayerSpawn");
+                EventMgr_RegisterEvent(g_iTestModules[x], Event_PlayerHurt, "TestModule_OnPlayerHurt");
+            #endif
+            
         #endif
         
         #if defined CONFIG_MANAGER
@@ -130,28 +136,48 @@ public KvCache:TestModule_ConfigCache(Handle:kv, sectionindex, const String:sect
 #endif
 */
 
-public TestModule_OnPlayerSpawn(client)
+public TestModule_OnClientPutInServer(client)
 {
-    //new Module:curmodule = EventMgr_GetEventOwner();
+    new Module:curmodule = EventMgr_GetEventOwner();
     
     #if defined LOG_MANAGER
-        //LogMgr_Print(curmodule, LogType_Normal, "Event_PlayerSpawn", "Client %N spawned.", client);
+        LogMgr_Print(curmodule, LogType_Normal, "Event_OnClientPutInServer", "Client %N joined.", client);
+    #endif
+}
+
+public TestModule_OnClientDisconnect(client)
+{
+    new Module:curmodule = EventMgr_GetEventOwner();
+    
+    #if defined LOG_MANAGER
+        LogMgr_Print(curmodule, LogType_Normal, "Event_OnClientDisconnect", "Client %N left.", client);
+    #endif
+}
+
+#if defined PROJECT_GAME_CSS
+
+public TestModule_OnPlayerSpawn(client)
+{
+    new Module:curmodule = EventMgr_GetEventOwner();
+    
+    #if defined LOG_MANAGER
+        LogMgr_Print(curmodule, LogType_Normal, "Event_PlayerSpawn", "Client %N spawned.", client);
     #endif
     
     #if defined ACCESS_MANAGER
     #if defined LOG_MANAGER
-    //if (AccessMgr_HasAccess(client, curmodule))
-        //LogMgr_Print(curmodule, LogType_Normal, "Event_PlayerSpawn", "Client %N has access to testmodule.", client);
+    if (AccessMgr_HasAccess(client, curmodule))
+        LogMgr_Print(curmodule, LogType_Normal, "Event_PlayerSpawn", "Client %N has access to testmodule.", client);
     #endif
     #endif
 }
 
 public TestModule_OnPlayerHurt(client, attacker, health, armor, const String:weapon[], dmg_health, dmg_armor, hitgroup)
 {
-    //new Module:curmodule = EventMgr_GetEventOwner();
+    new Module:curmodule = EventMgr_GetEventOwner();
     
     #if defined LOG_MANAGER
-        //LogMgr_Print(curmodule, LogType_Normal, "Event_PlayerHurt", "Client %N was hurt by %N health %d armor %d weapon %s dmg_health %d hitgroup %d", client, attacker, health, armor, weapon, dmg_health, hitgroup);
+        LogMgr_Print(curmodule, LogType_Normal, "Event_PlayerHurt", "Client %N was hurt by %N health %d armor %d weapon %s dmg_health %d hitgroup %d", client, attacker, health, armor, weapon, dmg_health, hitgroup);
     #endif
 }
 
@@ -163,8 +189,8 @@ public TestModule_OnRoundStart(dcell, Float:dfloat, any:darray[], String:dstring
     new Module:curmodule = EventMgr_GetEventOwner();
     
     #if defined TRANSLATIONS_MANAGER
-        //TransMgr_PrintText(SERVER_INDEX, MsgFormat_Both, MsgType_Server, curmodule, false, "Event round_start");
-        //TransMgr_PrintTextAll(false, false, MsgFormat_Both, MsgType_Chat, curmodule, false, "Event round_start");
+        TransMgr_PrintText(SERVER_INDEX, MsgFormat_Both, MsgType_Server, curmodule, true, "Round has started!");
+        TransMgr_PrintTextAll(false, false, MsgFormat_Both, MsgType_Chat, curmodule, true, "Round has started!");
     #endif
     
     #if defined EVENT_MANAGER
@@ -181,20 +207,22 @@ public TestModule_OnRoundStart2(dcell, Float:dfloat, any:darray[], String:dstrin
     new Module:curmodule = EventMgr_GetEventOwner();
     
     #if defined LOG_MANAGER
-        //LogMgr_Print(curmodule, LogType_Normal, "Round_Start", "Round start!");
+        LogMgr_Print(curmodule, LogType_Normal, "Round_Start", "Round start!");
     #endif
     
     #if defined EVENT_MANAGER
         // Toggle player_hurt event
         if (EventMgr_IsEventActive(curmodule, Event_PlayerHurt))
         {
-            //EventMgr_Disable(curmodule, Event_PlayerHurt);
-            //PrintToServer("Disabled event player_hurt");
+            EventMgr_Disable(curmodule, Event_PlayerHurt);
+            PrintToServer("Disabled event player_hurt");
         }
         else
         {
-            //EventMgr_Enable(curmodule, Event_PlayerHurt);
-            //PrintToServer("Enabled event player_hurt");
+            EventMgr_Enable(curmodule, Event_PlayerHurt);
+            PrintToServer("Enabled event player_hurt");
         }
     #endif
 }
+
+#endif

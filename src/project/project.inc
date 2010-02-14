@@ -26,10 +26,19 @@
  */
 
 /**
+ * Add defines for supported games here.
+ * Uncomment, or add a define for the game you are compiling for here.
+ */
+#define PROJECT_GAME_CSS
+//#define PROJECT_GAME_TF2
+//#define PROJECT_GAME_L4D
+//#define PROJECT_GAME_L4D2
+
+/**
  * Additional includes.
  * Include files like sdktools.inc here.
  */
-
+//#include <sdktools>
 
 /**
  * This is where it all begins.
@@ -138,6 +147,10 @@ enum ProjectEvents
     Event_OnConfigsExecuted,        /** All convars are set, cvar-dependent code should use this. */
     Event_OnClientPutInServer,      /** Client has joined the server. */
     Event_OnClientDisconnect,       /** Client is disconnecting from the server. */
+    
+    // CS:S events.
+    #if defined PROJECT_GAME_CSS
+    
     Event_RoundStart,               /** Round has started. */
     Event_RoundFreezeEnd,           /** Pre-round has freezetime has finished. */
     Event_RoundEnd,                 /** Round has ended. */
@@ -148,6 +161,8 @@ enum ProjectEvents
     Event_PlayerJump,               /** Client has jumped. */
     Event_WeaponFire                /** Client has fired a weapon. */
     //Event_WeaponEntityFire        /** Client has fired a weapon. (returns weapon entity index) */
+    
+    #endif
 }
 
 /**
@@ -167,8 +182,12 @@ stock String:g_ProjectEventDisplay[ProjectEvents][] = {
     "OnAutoConfigsBuffered",
     "OnConfigsExecuted",
     "OnClientPutInServer",
-    "OnClientDisconnect",
-    "RoundStart",
+    "OnClientDisconnect"
+    
+    // CS:S events.
+    #if defined PROJECT_GAME_CSS
+    
+    ,"RoundStart",
     "RoundFreezeEnd",
     "RoundEnd",
     "PlayerTeam",
@@ -178,6 +197,23 @@ stock String:g_ProjectEventDisplay[ProjectEvents][] = {
     "PlayerJump",
     "WeaponFire"
     //"WeaponEntityFire"
+    
+    #endif
+    
+    // TF2 events.
+    #if defined PROJECT_GAME_TF2
+    
+    #endif
+    
+    // L4D events.
+    #if defined PROJECT_GAME_L4D
+    
+    #endif
+    
+    // L4D2 events.
+    #if defined PROJECT_GAME_L4D2
+    
+    #endif
 };
 
 /**
@@ -185,7 +221,42 @@ stock String:g_ProjectEventDisplay[ProjectEvents][] = {
  * To calculate this number, simply add up the number of items in enum ProjectEvents.
  * Keep this updated as ProjectEvents is modified. 
  */
-#define EVENT_DATA_CELL_COUNT 22
+
+#define EVENT_COUNT_SM 13
+
+// Define how many events there are for each game.
+
+// CS:S event count.
+#if defined PROJECT_GAME_CSS
+  #define EVENT_COUNT_CSS 9
+#else
+  #define EVENT_COUNT_CSS 0
+#endif
+
+// TF2 event count.
+#if defined PROJECT_GAME_TF2
+  #define EVENT_COUNT_TF2 0
+#else
+  #define EVENT_COUNT_TF2 0
+#endif
+
+// L4D event count.
+#if defined PROJECT_GAME_L4D
+  #define EVENT_COUNT_L4D 0
+#else
+  #define EVENT_COUNT_L4D 0
+#endif
+
+// L4D2 event count.
+#if defined PROJECT_GAME_L4D2
+  #define EVENT_COUNT_L4D2 0
+#else
+  #define EVENT_COUNT_L4D2 0
+#endif
+
+
+// Add up sourcemod callbacks, and each supported game.
+#define EVENT_DATA_CELL_COUNT EVENT_COUNT_SM + EVENT_COUNT_CSS + EVENT_COUNT_TF2 + EVENT_COUNT_L4D + EVENT_COUNT_L4D2
 
 /**
  * Datatypes that can be passed with each event to modules.
