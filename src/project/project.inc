@@ -163,6 +163,21 @@ enum ProjectEvents
     //Event_WeaponEntityFire        /** Client has fired a weapon. (returns weapon entity index) */
     
     #endif
+    
+    // TF2 events.
+    #if defined PROJECT_GAME_TF2
+    
+    #endif
+    
+    // L4D events.
+    #if defined PROJECT_GAME_L4D
+    
+    #endif
+    
+    // L4D2 events.
+    #if defined PROJECT_GAME_L4D2
+    
+    #endif
 }
 
 /**
