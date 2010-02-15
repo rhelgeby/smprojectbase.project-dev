@@ -29,7 +29,9 @@
  * Add defines for supported games here.
  * Uncomment, or add a define for the game you are compiling for here.
  */
-#define PROJECT_GAME_CSS
+//#define PROJECT_GAME_CSS
+//#define PROJECT_GAME_DOD
+//#define PROJECT_GAME_HL2DM
 //#define PROJECT_GAME_TF2
 //#define PROJECT_GAME_L4D
 //#define PROJECT_GAME_L4D2
@@ -164,6 +166,16 @@ enum ProjectEvents
     
     #endif
     
+    // DOD events.
+    #if defined PROJECT_GAME_DOD
+    
+    #endif
+    
+    // HL2DM events.
+    #if defined PROJECT_GAME_HL2DM
+    
+    #endif
+    
     // TF2 events.
     #if defined PROJECT_GAME_TF2
     
@@ -202,7 +214,7 @@ stock String:g_ProjectEventDisplay[ProjectEvents][] = {
     // CS:S events.
     #if defined PROJECT_GAME_CSS
     
-    ,"RoundStart",
+   ,"RoundStart",      // The beginning of a group of game events has to include the preceding "," from the group before it.
     "RoundFreezeEnd",
     "RoundEnd",
     "PlayerTeam",
@@ -212,6 +224,20 @@ stock String:g_ProjectEventDisplay[ProjectEvents][] = {
     "PlayerJump",
     "WeaponFire"
     //"WeaponEntityFire"
+    
+    #endif
+    
+    // DOD events.
+    #if defined PROJECT_GAME_DOD
+    
+    // All DOD events should be here.
+    
+    #endif
+    
+    // HL2DM events.
+    #if defined PROJECT_GAME_HL2DM
+    
+    // All DOD events should be here.
     
     #endif
     
@@ -243,35 +269,50 @@ stock String:g_ProjectEventDisplay[ProjectEvents][] = {
 
 // CS:S event count.
 #if defined PROJECT_GAME_CSS
-  #define EVENT_COUNT_CSS 9
+  #define EVENT_COUNT_CSS 9     // <-- Number of CSS events.
 #else
   #define EVENT_COUNT_CSS 0
 #endif
 
+// DOD event count.
+#if defined PROJECT_GAME_DOD
+  #define EVENT_COUNT_DOD 0     // <-- Number of DOD events.
+#else
+  #define EVENT_COUNT_DOD 0
+#endif
+
+// HL2DM event count.
+#if defined PROJECT_GAME_HL2DM
+  #define EVENT_COUNT_HL2DM 0     // <-- Number of HL2DM events.
+#else
+  #define EVENT_COUNT_HL2DM 0
+#endif
+
 // TF2 event count.
 #if defined PROJECT_GAME_TF2
-  #define EVENT_COUNT_TF2 0
+  #define EVENT_COUNT_TF2 0     // <-- Number of TF2 events.
 #else
   #define EVENT_COUNT_TF2 0
 #endif
 
 // L4D event count.
 #if defined PROJECT_GAME_L4D
-  #define EVENT_COUNT_L4D 0
+  #define EVENT_COUNT_L4D 0     // <-- Number of L4D events.
 #else
   #define EVENT_COUNT_L4D 0
 #endif
 
 // L4D2 event count.
-#if defined PROJECT_GAME_L4D2
+#if defined PROJECT_GAME_L4D2   // <-- Number of L4D2 events.
   #define EVENT_COUNT_L4D2 0
 #else
   #define EVENT_COUNT_L4D2 0
 #endif
 
-
-// Add up sourcemod callbacks, and each supported game.
-#define EVENT_DATA_CELL_COUNT EVENT_COUNT_SM + EVENT_COUNT_CSS + EVENT_COUNT_TF2 + EVENT_COUNT_L4D + EVENT_COUNT_L4D2
+/**
+ * All above defines are added up.  0 is used for games not supported.
+ */
+#define EVENT_DATA_CELL_COUNT   EVENT_COUNT_SM + EVENT_COUNT_CSS + EVENT_COUNT_DOD + EVENT_COUNT_HL2DM + EVENT_COUNT_TF2 + EVENT_COUNT_L4D + EVENT_COUNT_L4D2
 
 /**
  * Datatypes that can be passed with each event to modules.
