@@ -288,9 +288,11 @@ stock Function:EventMgr_SetEventForward(Module:module, ProjectEvents:event, cons
  * @param size              The max size of the arrays/strings if passing them through eventdata.  Otherwise set this to 1.
  * @param eventdatatypes    An array of datatypes for each event value.  See enum EventDataTypes.  This should line up with eventdata.
  * @param modules           An extra filter to narrow down which modules will see the event.  This MUST end with INVALID_MODULE.
+ * 
+ * @return                  An hook action defined in enum Action.
  */
 new Module:g_ForwardToModule;  // The global variable to store the next module to receive the event being forwarded.
-stock EventMgr_Forward(ProjectEvents:event, any:eventdata[][], numValues, size, EventDataTypes:eventdatatypes[], Module:modules[] = {INVALID_MODULE})
+stock Action:EventMgr_Forward(ProjectEvents:event, any:eventdata[][], numValues, size, EventDataTypes:eventdatatypes[], Module:modules[] = {INVALID_MODULE})
 {
     #if defined PROFILE_EVENTS
         new Handle:profiler = CreateProfiler();
@@ -299,6 +301,8 @@ stock EventMgr_Forward(ProjectEvents:event, any:eventdata[][], numValues, size, 
     
     new Function:func;
     new Module:module;
+    new Action:result;
+    new Action:finalresult = Plugin_Continue;
     
     // Loop through all the modules.
     new count = GetArraySize(g_hEventModuleCache[event]);
@@ -345,7 +349,12 @@ stock EventMgr_Forward(ProjectEvents:event, any:eventdata[][], numValues, size, 
         }
         
         // Call the function.
-        Call_Finish();
+        Call_Finish(result);
+        
+        if (result == Plugin_Stop)
+            return Plugin_Stop;
+        else if (result == Plugin_Handled)
+            finalresult = Plugin_Handled;
     }
     
     #if defined PROFILE_EVENTS
@@ -353,6 +362,8 @@ stock EventMgr_Forward(ProjectEvents:event, any:eventdata[][], numValues, size, 
         LogMessage("PROFILER: Event %s: Forwarded to %d modules, taking %f seconds to do.", g_ProjectEventDisplay[event], count, GetProfilerTime(profiler));
         CloseHandle(profiler);
     #endif
+    
+    return finalresult;
 }
 
 /**

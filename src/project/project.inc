@@ -161,7 +161,7 @@ enum ProjectEvents
     Event_PlayerHurt,               /** Client has been damaged. */
     Event_PlayerDeath,              /** Client has been killed. */
     Event_PlayerJump,               /** Client has jumped. */
-    Event_WeaponFire                /** Client has fired a weapon. */
+    Event_WeaponFire,               /** Client has fired a weapon. */
     //Event_WeaponEntityFire        /** Client has fired a weapon. (returns weapon entity index) */
     
     #endif
@@ -259,7 +259,6 @@ stock String:g_ProjectEventDisplay[ProjectEvents][] = {
 
 /**
  * The number of cells used to store all the event enable data in enum ProjectEvents. (above)
- * To calculate this number, simply add up the number of items in enum ProjectEvents.
  * Keep this updated as ProjectEvents is modified. 
  */
 
