@@ -128,214 +128,7 @@ enum ModuleData
 //                 Event Manager
 // **********************************************
 // Note: Ignore this section if eventmanager.inc isn't included in the project.
-
-/**
- * This is a collection of ALL game and custom events.
- * Add any custom events here to the bottom of the list, and update define EVENT_DATA_CELL_COUNT. (below)
- * Also don't forget to add the display name of your event to g_ProjectEventDisplay. (below)
- */
-enum ProjectEvents
-{
-    Event_OnAllPluginsLoaded,       /** All plugins have loaded. */
-    Event_OnPluginEnd,              /** Plugin is ending. */
-    Event_OnAllModulesLoaded,       /** All modules have been registered. */
-    Event_OnModuleEnable,           /** A module has been enabled. */
-    Event_OnMyModuleEnable,         /** The module that hooked this event callback has been enabled. */
-    Event_OnModuleDisable,          /** A module has been disabled. */
-    Event_OnMyModuleDisable,        /** The module that hooked this event callback has been disabled. */
-    Event_OnMapStart,               /** The map has started. */
-    Event_OnMapEnd,                 /** The map has ended. */
-    Event_OnAutoConfigsBuffered,    /** This is called before OnConfigsExecuted but any time after OnMapStart. */
-    Event_OnConfigsExecuted,        /** All convars are set, cvar-dependent code should use this. */
-    Event_OnClientPutInServer,      /** Client has joined the server. */
-    Event_OnClientDisconnect,       /** Client is disconnecting from the server. */
-    
-    // CS:S events.
-    #if defined PROJECT_GAME_CSS
-    
-    Event_RoundStart,               /** Round has started. */
-    Event_RoundFreezeEnd,           /** Pre-round has freezetime has finished. */
-    Event_RoundEnd,                 /** Round has ended. */
-    Event_PlayerTeam,               /** Client has joined a team. */
-    Event_PlayerSpawn,              /** Client has spawned. */
-    Event_PlayerHurt,               /** Client has been damaged. */
-    Event_PlayerDeath,              /** Client has been killed. */
-    Event_PlayerJump,               /** Client has jumped. */
-    Event_WeaponFire,               /** Client has fired a weapon. */
-    //Event_WeaponEntityFire        /** Client has fired a weapon. (returns weapon entity index) */
-    
-    #endif
-    
-    // DOD events.
-    #if defined PROJECT_GAME_DOD
-    
-    #endif
-    
-    // HL2DM events.
-    #if defined PROJECT_GAME_HL2DM
-    
-    #endif
-    
-    // TF2 events.
-    #if defined PROJECT_GAME_TF2
-    
-    #endif
-    
-    // L4D events.
-    #if defined PROJECT_GAME_L4D
-    
-    #endif
-    
-    // L4D2 events.
-    #if defined PROJECT_GAME_L4D2
-    
-    #endif
-}
-
-/**
- * String array of display names for project events. (above)
- * Keep this updated as ProjectEvents is modified.
- */
-stock String:g_ProjectEventDisplay[ProjectEvents][] = {
-    "OnAllPluginsLoaded",
-    "OnPluginEnd",
-    "OnAllModulesLoaded",
-    "OnModuleEnable",
-    "OnMyModuleEnable",
-    "OnModuleDisable",
-    "OnMyModuleDisable",
-    "OnMapStart",
-    "OnMapEnd",
-    "OnAutoConfigsBuffered",
-    "OnConfigsExecuted",
-    "OnClientPutInServer",
-    "OnClientDisconnect"
-    
-    // CS:S events.
-    #if defined PROJECT_GAME_CSS
-    
-   ,"RoundStart",      // The beginning of a group of game events has to include the preceding "," from the group before it.
-    "RoundFreezeEnd",
-    "RoundEnd",
-    "PlayerTeam",
-    "PlayerSpawn",
-    "PlayerHurt",
-    "PlayerDeath",
-    "PlayerJump",
-    "WeaponFire"
-    //"WeaponEntityFire"
-    
-    #endif
-    
-    // DOD events.
-    #if defined PROJECT_GAME_DOD
-    
-    // All DOD events should be here.
-    
-    #endif
-    
-    // HL2DM events.
-    #if defined PROJECT_GAME_HL2DM
-    
-    // All DOD events should be here.
-    
-    #endif
-    
-    // TF2 events.
-    #if defined PROJECT_GAME_TF2
-    
-    #endif
-    
-    // L4D events.
-    #if defined PROJECT_GAME_L4D
-    
-    #endif
-    
-    // L4D2 events.
-    #if defined PROJECT_GAME_L4D2
-    
-    #endif
-};
-
-/**
- * The number of cells used to store all the event enable data in enum ProjectEvents. (above)
- * Keep this updated as ProjectEvents is modified. 
- */
-
-#define EVENT_COUNT_SM 13
-
-// Define how many events there are for each game.
-
-// CS:S event count.
-#if defined PROJECT_GAME_CSS
-  #define EVENT_COUNT_CSS 9     // <-- Number of CSS events.
-#else
-  #define EVENT_COUNT_CSS 0
-#endif
-
-// DOD event count.
-#if defined PROJECT_GAME_DOD
-  #define EVENT_COUNT_DOD 0     // <-- Number of DOD events.
-#else
-  #define EVENT_COUNT_DOD 0
-#endif
-
-// HL2DM event count.
-#if defined PROJECT_GAME_HL2DM
-  #define EVENT_COUNT_HL2DM 0     // <-- Number of HL2DM events.
-#else
-  #define EVENT_COUNT_HL2DM 0
-#endif
-
-// TF2 event count.
-#if defined PROJECT_GAME_TF2
-  #define EVENT_COUNT_TF2 0     // <-- Number of TF2 events.
-#else
-  #define EVENT_COUNT_TF2 0
-#endif
-
-// L4D event count.
-#if defined PROJECT_GAME_L4D
-  #define EVENT_COUNT_L4D 0     // <-- Number of L4D events.
-#else
-  #define EVENT_COUNT_L4D 0
-#endif
-
-// L4D2 event count.
-#if defined PROJECT_GAME_L4D2   // <-- Number of L4D2 events.
-  #define EVENT_COUNT_L4D2 0
-#else
-  #define EVENT_COUNT_L4D2 0
-#endif
-
-/**
- * All above defines are added up.  0 is used for games not supported.
- */
-#define EVENT_DATA_CELL_COUNT   EVENT_COUNT_SM + EVENT_COUNT_CSS + EVENT_COUNT_DOD + EVENT_COUNT_HL2DM + EVENT_COUNT_TF2 + EVENT_COUNT_L4D + EVENT_COUNT_L4D2
-
-/**
- * Datatypes that can be passed with each event to modules.
- * Don't touch this!
- */
-enum EventDataTypes
-{
-    DataType_Cell,
-    DataType_Float,
-    DataType_Array,
-    DataType_String
-}
-
-/**
- * Common data type info.
- */
-
-// When forwarding custom events with no data, use this.
-stock any:g_CommonEventData1[][] = {{0}};
-
-// When forwarding custom events whose data thats being passed matches these, you can use these.
-stock EventDataTypes:g_CommonDataType1[] = {};
-stock EventDataTypes:g_CommonDataType2[] = {DataType_Cell};
-
+// Look in project_events.inc to setup and hook all events your project will need.
 
 // **********************************************
 //                    General
@@ -439,17 +232,20 @@ stock EventDataTypes:g_CommonDataType2[] = {DataType_Cell};
  * from the "translations/TM_BASE_DIR/" dir.
  * 
  * Note: If the translations manager isn't included, you must load all your translations here.
+ * 
+ * @param transmanagerloaded    True if the translations manager is loaded, false if not.
  */
-stock Project_LoadExtraTranslations()
+stock Project_LoadExtraTranslations(bool:transmanagerloaded)
 {
     // Load translations we may need, if the translations manager isn't loaded.
-    #if !defined TRANSLATIONS_MANAGER
+    if (!transmanagerloaded)
+    {
         LoadTranslations("projectbase.phrases");
         
         #if defined PROJECT_BASE_CMD
             LoadTranslations("basecmd.phrases");
         #endif
-    #endif
+    }
     
     // Standard phrases provided by SM.
     LoadTranslations("common.phrases");

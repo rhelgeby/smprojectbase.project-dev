@@ -77,6 +77,9 @@ new Module:g_module<ModuleVarName>;
     //EventMgr_RegisterEvent(g_module<ModuleVarName>, Event_OnConfigsExecuted,       "<FuncPrefix>_OnConfigsExecuted");
     //EventMgr_RegisterEvent(g_module<ModuleVarName>, Event_OnClientPutInServer,     "<FuncPrefix>_OnClientPutInServer");
     //EventMgr_RegisterEvent(g_module<ModuleVarName>, Event_OnClientDisconnect,      "<FuncPrefix>_OnClientDisconnect");
+    
+    #if defined PROJECT_GAME_CSS
+    
     //EventMgr_RegisterEvent(g_module<ModuleVarName>, Event_RoundStart,              "<FuncPrefix>_RoundStart");
     //EventMgr_RegisterEvent(g_module<ModuleVarName>, Event_RoundFreezeEnd,          "<FuncPrefix>_RoundFreezeEnd");
     //EventMgr_RegisterEvent(g_module<ModuleVarName>, Event_RoundEnd,                "<FuncPrefix>_RoundEnd");
@@ -86,6 +89,8 @@ new Module:g_module<ModuleVarName>;
     //EventMgr_RegisterEvent(g_module<ModuleVarName>, Event_PlayerDeath,             "<FuncPrefix>_PlayerDeath");
     //EventMgr_RegisterEvent(g_module<ModuleVarName>, Event_PlayerJump,              "<FuncPrefix>_PlayerJump");
     //EventMgr_RegisterEvent(g_module<ModuleVarName>, Event_WeaponFire,              "<FuncPrefix>_WeaponFire");
+    
+    #endif
     
     // Register config file(s) that this module will use.
     // ConfigMgr_Register(g_module<ModuleVarName>, "<FuncPrefix>_OnConfigReload", "configs/<projectshortname>/<config>.txt");

@@ -136,6 +136,8 @@ public KvCache:TestModule_ConfigCache(Handle:kv, sectionindex, const String:sect
 #endif
 */
 
+#if defined EVENT_MANAGER
+
 public TestModule_OnClientPutInServer(client)
 {
     new Module:curmodule = EventMgr_GetEventOwner();
@@ -224,5 +226,7 @@ public TestModule_OnRoundStart2(dcell, Float:dfloat, any:darray[], String:dstrin
         }
     #endif
 }
+
+#endif
 
 #endif

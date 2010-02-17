@@ -95,7 +95,7 @@ public OnPluginStart()
     #if defined TRANSLATIONS_MANAGER
         TransMgr_OnPluginStart();
     #else
-        Project_LoadExtraTranslations(); // Call this to load translations if the translations manager isn't included.
+        Project_LoadExtraTranslations(false); // Call this to load translations if the translations manager isn't included.
     #endif
     
     #if defined LOG_MANAGER
@@ -115,18 +115,9 @@ public OnPluginStart()
     
     // All modules should be registered by this point!
     
-    // Forward the OnAllModulesLoaded to all modules.
-    EventMgr_Forward(Event_OnAllModulesLoaded, g_CommonEventData1, 0, 0, g_CommonDataType1);
-}
-
-/**
- * All plugins have loaded.
- */
-public OnAllPluginsLoaded()
-{
     #if defined EVENT_MANAGER
-        // Forward event to all modules.
-        EventMgr_Forward(Event_OnAllPluginsLoaded, g_CommonEventData1, 0, 0, g_CommonDataType1);
+        // Forward the OnAllModulesLoaded to all modules.
+        EventMgr_Forward(Event_OnAllModulesLoaded, g_CommonEventData1, 0, 0, g_CommonDataType1);
     #endif
 }
 
@@ -169,81 +160,4 @@ public OnPluginEnd()
     #endif
     
     ModuleMgr_OnPluginEnd();
-}
-
-/**
- * The map has started.
- */
-public OnMapStart()
-{
-    #if defined EVENT_MANAGER
-        // Forward event to all modules.
-        EventMgr_Forward(Event_OnMapStart, g_CommonEventData1, 0, 0, g_CommonDataType1);
-    #endif
-}
-
-/**
- * The map has ended.
- */
-public OnMapEnd()
-{
-    #if defined EVENT_MANAGER
-        // Forward event to all modules.
-        EventMgr_Forward(Event_OnMapEnd, g_CommonEventData1, 0, 0, g_CommonDataType1);
-    #endif
-}
-
-/**
- * This is called before OnConfigsExecuted but any time after OnMapStart.
- * Per-map settings should be set here. 
- */
-public OnAutoConfigsBuffered()
-{
-    #if defined EVENT_MANAGER
-        // Forward event to all modules.
-        EventMgr_Forward(Event_OnAutoConfigsBuffered, g_CommonEventData1, 0, 0, g_CommonDataType1);
-    #endif
-}
-
-/**
- * All convars are set, cvar-dependent code should use this.
- */
-public OnConfigsExecuted()
-{
-    #if defined EVENT_MANAGER
-        // Forward event to all modules.
-        EventMgr_Forward(Event_OnConfigsExecuted, g_CommonEventData1, 0, 0, g_CommonDataType1);
-    #endif
-}
-
-/**
- * Client has joined the server.
- * 
- * @param client    The client index.
- */
-public OnClientPutInServer(client)
-{
-    #if defined EVENT_MANAGER
-        // Forward event to all modules.
-        new any:eventdata[1][1];
-        eventdata[0][0] = client;
-        
-        EventMgr_Forward(Event_OnClientPutInServer, eventdata, sizeof(eventdata), sizeof(eventdata[]), g_CommonDataType2);
-    #endif
-}
-
-/**
- * Client is disconnecting from the server.
- * 
- * @param client    The client index.
- */
-public OnClientDisconnect(client)
-{
-    #if defined EVENT_MANAGER
-        // Forward event to all modules.
-        new any:eventdata[1][1];
-        eventdata[0][0] = client;
-        
-        EventMgr_Forward(Event_OnClientDisconnect, eventdata, sizeof(eventdata), sizeof(eventdata[]), g_CommonDataType2);
-    #endif
 }

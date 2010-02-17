@@ -389,7 +389,7 @@ stock TransMgr_LoadTranslations()
     }
     
     // Loads extra translations from the main project.inc file.
-    Project_LoadExtraTranslations();
+    Project_LoadExtraTranslations(true);
 }
 
 /**
