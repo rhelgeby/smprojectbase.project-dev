@@ -48,6 +48,9 @@
  */
 stock ForwardOnPluginStart()
 {
+    // Forward event to non-modules.
+    
+    
     // Forward the OnPluginStart event to all modules here.
     TestModule_OnPluginStart();
 }
@@ -204,6 +207,8 @@ enum ModuleData
  * Example path: addons/sourcemod/translations/TM_BASE_DIR/projectbase.phrases.txt.
  * If the resulting path doesn't exist, errors will be logged.
  * 
+ * Comment the define out to disable auto-loading.  See stock Project_LoadExtraTranslations.
+ * 
  * Note: This only used if translationsmanager.inc is included.
  */
 #define TM_BASE_DIR PROJECT_SHORTNAME
@@ -227,9 +232,10 @@ enum ModuleData
 
 /**
  * Load any extra translation files here.
+ * This is also called when translations are being reloaded mid-game.
  *  
- * All translations files in the format of *.phrases.txt will be automatically loaded
- * from the "translations/TM_BASE_DIR/" dir.
+ * If TM_BASE_DIR is defined, all translations files in the format of *.phrases.txt will be
+ * automatically loaded from the "translations/TM_BASE_DIR/" dir.
  * 
  * Note: If the translations manager isn't included, you must load all your translations here.
  * 

@@ -77,7 +77,6 @@
 
 	"ModuleMgr cmd base lvl2 modules list print hidden"
 	{
-		"#format"	"{1:s},{2:s},{3:s}"
 		"en"		"<Hidden>"
 	}
 

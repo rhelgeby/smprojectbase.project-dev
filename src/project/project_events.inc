@@ -93,6 +93,7 @@ enum ProjectEvents
  * Keep this updated as ProjectEvents is modified.
  */
 stock String:g_ProjectEventDisplay[ProjectEvents][] = {
+    // Cross-game events.
     "OnAllPluginsLoaded",
     "OnPluginEnd",
     "OnAllModulesLoaded",
@@ -106,6 +107,9 @@ stock String:g_ProjectEventDisplay[ProjectEvents][] = {
     "OnConfigsExecuted",
     "OnClientPutInServer",
     "OnClientDisconnect"
+    
+    // Custom events.
+    
     
     // CS:S events.
     #if defined PROJECT_GAME_CSS
@@ -158,7 +162,8 @@ stock String:g_ProjectEventDisplay[ProjectEvents][] = {
  * Keep this updated as ProjectEvents is modified. 
  */
 
-#define EVENT_COUNT_SM 13
+// Number of defines for cross-game/custom events.
+#define EVENT_COUNT_MULTI 13
 
 // Define how many events there are for each game.
 
@@ -207,7 +212,7 @@ stock String:g_ProjectEventDisplay[ProjectEvents][] = {
 /**
  * All above defines are added up.  0 is used for games not supported.
  */
-#define EVENT_DATA_CELL_COUNT   EVENT_COUNT_SM + EVENT_COUNT_CSS + EVENT_COUNT_DOD + EVENT_COUNT_HL2DM + EVENT_COUNT_TF2 + EVENT_COUNT_L4D + EVENT_COUNT_L4D2
+#define EVENT_DATA_CELL_COUNT   EVENT_COUNT_MULTI + EVENT_COUNT_CSS + EVENT_COUNT_DOD + EVENT_COUNT_HL2DM + EVENT_COUNT_TF2 + EVENT_COUNT_L4D + EVENT_COUNT_L4D2
 
 /**
  * Datatypes that can be passed with each event to modules.
@@ -311,6 +316,11 @@ public OnClientDisconnect(client)
 }
 
 // **********************************************
+//            Custom Event Forwarding
+// **********************************************
+
+
+// **********************************************
 //              Game Event Hooking
 // **********************************************
 
@@ -333,6 +343,16 @@ stock EventMgr_HookEvents()
         HookEvent("player_death", GameEvent_PlayerDeath);
         HookEvent("player_jump", GameEvent_PlayerJump);
         HookEvent("weapon_fire", GameEvent_WeaponFire);
+    #endif
+    
+    // HL2DM events.
+    #if defined PROJECT_GAME_HL2DM
+    
+    #endif
+    
+    // DOD events.
+    #if defined PROJECT_GAME_DOD
+    
     #endif
     
     // TF2 events.

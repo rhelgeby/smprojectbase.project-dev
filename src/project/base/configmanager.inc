@@ -482,8 +482,7 @@ stock ConfigMgr_ReadCell(Module:module, configindex, ConfigData:data)
  * @param data      The data to get the values of.  See enum ConfigData.
  * @param output    Output array for the data read.
  */
-//stock ConfigMgr_ReadCells(Module:module, ConfigData:data, any:output[CM_MODULE_MAX_CONFIGS])
-stock ConfigMgr_ReadCells(Module:module, ConfigData:data, any:output[])  // ^^ Should be this, but compiler bug/limitation.
+stock ConfigMgr_ReadCells(Module:module, ConfigData:data, any:output[CM_MODULE_MAX_CONFIGS])
 {
     // Loop through each config index.
     for (new configindex = 0; configindex < CM_MODULE_MAX_CONFIGS; configindex++)

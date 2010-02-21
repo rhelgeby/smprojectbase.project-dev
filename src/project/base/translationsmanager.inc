@@ -354,39 +354,41 @@ stock PhraseToBool:TransMgr_TranslatePhraseToBool(target, BoolPhrases:boolphrase
  */
 stock TransMgr_LoadTranslations()
 {
-    // Build a path to the directory with translations.
-    decl String:fulltransfilepath[PLATFORM_MAX_PATH];
-    BuildPath(Path_SM, fulltransfilepath, sizeof(fulltransfilepath), "translations/%s", TM_BASE_DIR);
-    
-    // Open directory, log errors if it doesn't exist.
-    new Handle:hDir = OpenDirectory(fulltransfilepath);
-    if (hDir == INVALID_HANDLE)
-    {
-        LogError("Translations file directory (%s) does not exist on the server", fulltransfilepath);
-        return;
-    }
-    
-    decl String:filename[64];
-    new const String:fileext[32] = ".phrases.txt";
-    new FileType:type;
-    decl String:transfilepath[PLATFORM_MAX_PATH];
-    
-    // Loop through all the files in the directory.
-    while (ReadDirEntry(hDir, filename, sizeof(filename), type))
-    {
-        if (type != FileType_File)
-            continue;
+    #if defined TM_BASE_DIR
+        // Build a path to the directory with translations.
+        decl String:fulltransfilepath[PLATFORM_MAX_PATH];
+        BuildPath(Path_SM, fulltransfilepath, sizeof(fulltransfilepath), "translations/%s", TM_BASE_DIR);
         
-        // Load the file if it ends with ".phrases.txt"
-        if (StrContains(filename, fileext, false) == strlen(filename) - strlen(fileext))
+        // Open directory, log errors if it doesn't exist.
+        new Handle:hDir = OpenDirectory(fulltransfilepath);
+        if (hDir == INVALID_HANDLE)
         {
-            // Format a path to the file, relative to the "translations" folder.
-            Format(transfilepath, sizeof(transfilepath), "%s/%s", TM_BASE_DIR, filename);
-            LoadTranslations(transfilepath);
-            
-            LogMessage("[Translations Manager] Loaded \"%s\"", transfilepath);
+            LogError("Translations file directory (%s) does not exist on the server", fulltransfilepath);
+            return;
         }
-    }
+        
+        decl String:filename[64];
+        new const String:fileext[32] = ".phrases.txt";
+        new FileType:type;
+        decl String:transfilepath[PLATFORM_MAX_PATH];
+        
+        // Loop through all the files in the directory.
+        while (ReadDirEntry(hDir, filename, sizeof(filename), type))
+        {
+            if (type != FileType_File)
+                continue;
+            
+            // Load the file if it ends with ".phrases.txt"
+            if (StrContains(filename, fileext, false) == strlen(filename) - strlen(fileext))
+            {
+                // Format a path to the file, relative to the "translations" folder.
+                Format(transfilepath, sizeof(transfilepath), "%s/%s", TM_BASE_DIR, filename);
+                LoadTranslations(transfilepath);
+                
+                LogMessage("[Translations Manager] Loaded \"%s\"", transfilepath);
+            }
+        }
+    #endif
     
     // Loads extra translations from the main project.inc file.
     Project_LoadExtraTranslations(true);
