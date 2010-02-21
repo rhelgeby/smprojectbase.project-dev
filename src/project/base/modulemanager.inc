@@ -207,8 +207,8 @@ stock bool:ModuleMgr_IsModuleValid(Module:module)
  */
 stock ModuleMgr_Disable(Module:module)
 {
-    // Set the ModuleData_Disabled data to 'true'.
-    ModuleMgr_WriteCell(module, ModuleData_Disabled, true);
+    if (ModuleMgr_IsDisabled(module))
+        return;
     
     #if defined EVENT_MANAGER
         // Forward event to all modules.
@@ -222,6 +222,9 @@ stock ModuleMgr_Disable(Module:module)
         modules[0] = module;
         EventMgr_Forward(Event_OnMyModuleDisable, g_CommonEventData1, 0, 0, g_CommonDataType1, modules);
     #endif
+    
+    // Set the ModuleData_Disabled data to 'true'.
+    ModuleMgr_WriteCell(module, ModuleData_Disabled, true);
 }
 
 /**
@@ -232,6 +235,9 @@ stock ModuleMgr_Disable(Module:module)
  */
 stock ModuleMgr_Enable(Module:module)
 {
+    if (!ModuleMgr_IsDisabled(module))
+        return;
+    
     // Set the ModuleData_Disabled data to 'false'.
     ModuleMgr_WriteCell(module, ModuleData_Disabled, false);
     
