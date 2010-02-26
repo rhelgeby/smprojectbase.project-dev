@@ -70,7 +70,7 @@ new Module:g_module<ModuleVarName>;
     //EventMgr_RegisterEvent(g_module<ModuleVarName>, Event_OnModuleEnable,          "<FuncPrefix>_OnModuleEnable");
     //EventMgr_RegisterEvent(g_module<ModuleVarName>, Event_OnMyModuleEnable,        "<FuncPrefix>_OnMyModuleEnable");
     //EventMgr_RegisterEvent(g_module<ModuleVarName>, Event_OnModuleDisable,         "<FuncPrefix>_OnModuleDisable");
-    //EventMgr_RegisterEvent(g_module<ModuleVarName>, Event_OnModuleMyDisable,       "<FuncPrefix>_OnMyModuleDisable");
+    //EventMgr_RegisterEvent(g_module<ModuleVarName>, Event_OnMyModuleDisable,       "<FuncPrefix>_OnMyModuleDisable");
     //EventMgr_RegisterEvent(g_module<ModuleVarName>, Event_OnMapStart,              "<FuncPrefix>_OnMapStart");
     //EventMgr_RegisterEvent(g_module<ModuleVarName>, Event_OnMapEnd,                "<FuncPrefix>_OnMapEnd");
     //EventMgr_RegisterEvent(g_module<ModuleVarName>, Event_OnAutoConfigsBuffered,   "<FuncPrefix>_OnAutoConfigsBuffered");

@@ -3,7 +3,7 @@
  *
  *  Project
  *
- *  File:          versioninfo.inc (Optional)
+ *  File:          versioninfo.inc
  *  Type:          Base
  *  Description:   Command to display Mercurial version information in-game.
  *

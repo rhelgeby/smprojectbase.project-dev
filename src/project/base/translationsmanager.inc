@@ -3,7 +3,7 @@
  *
  *  Project
  *
- *  File:          translationsmanager.inc (Optional)
+ *  File:          translationsmanager.inc
  *  Type:          Base
  *  Description:   Manages translations throughout the project.
  *
@@ -305,7 +305,7 @@ stock TransMgr_TranslateBoolToPhrase(target, bool:boolean, BoolPhrases:boolphras
 }
 
 /**
- * Translates a boolean value into a text phrase.
+ * Translates a text phrase into a boolean value.
  * 
  * @param target        The client index.  LANG_SERVER to use server's language.
  * @param boolphrase    The boolean phrase pair to translate from.
@@ -337,12 +337,12 @@ stock PhraseToBool:TransMgr_TranslatePhraseToBool(target, BoolPhrases:boolphrase
     }
     
     if (StrEqual(phrase, boolphrasetrue, false))
-        return BoolToPhrase_True;
+        return PhraseToBool_True;
     
     if (StrEqual(phrase, boolphrasefalse, false))
-        return BoolToPhrase_False;
+        return PhraseToBool_False;
     
-    return BoolToPhrase_Neither;
+    return PhraseToBool_Neither;
 }
 
 // **********************************************

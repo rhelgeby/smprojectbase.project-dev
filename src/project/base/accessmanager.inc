@@ -3,7 +3,7 @@
  *
  *  Project
  *
- *  File:          accessmanager.inc (Optional)
+ *  File:          accessmanager.inc
  *  Type:          Base
  *  Description:   Manages client access to project modules.
  *
@@ -87,6 +87,10 @@ stock AccessMgr_OnModuleRegistered(Module:module)
  */
 stock bool:AccessMgr_HasAccess(client, Module:module = INVALID_MODULE)
 {
+    // Console always has access.
+    if (client == SERVER_INDEX)
+        return true;
+    
     // Root access always returns true.
     if (AccessMgr_HasRootAccess(client))
         return true;

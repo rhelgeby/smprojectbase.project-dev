@@ -3,7 +3,7 @@
  *
  *  Project
  *
- *  File:          config.inc (Optional)
+ *  File:          config.inc
  *  Type:          Base
  *  Description:   Handles all project configs.
  *

@@ -3,7 +3,7 @@
  *
  *  Project
  *
- *  File:          modulemanager.inc(Required)
+ *  File:          modulemanager.inc
  *  Type:          Base
  *  Description:   Manages project modules.
  *

@@ -3,7 +3,7 @@
  *
  *  Project
  *
- *  File:          wrappers.inc (Required)
+ *  File:          wrappers.inc
  *  Type:          Base
  *  Description:   Contains simple native wrappers for the plugin.
  *
