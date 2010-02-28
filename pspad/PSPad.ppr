@@ -96,5 +96,5 @@ Project
 Main=
 Selected=..\src\project.sp
 [..\src\project.sp]
-TopLine=9
-Caret=1,27
+TopLine=1
+Caret=5,4

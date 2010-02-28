@@ -223,11 +223,11 @@ enum ModuleData
  * 
  * Color chars vary from game to game.
  */
-#define TM_MSGFORMAT_PLUGIN_COLOR      "\x04[%s] \x01%s", PROJECT_FULLNAME, translated
+#define TM_MSGFORMAT_PLUGIN_COLOR      "\x04[%s]\x01 %s", PROJECT_FULLNAME, translated
 #define TM_MSGFORMAT_PLUGIN_NOCOLOR    "[%s] %s", PROJECT_FULLNAME, translated
-#define TM_MSGFORMAT_MODULE_COLOR      "\x03[%s] \x01%s", modulefullname, translated
+#define TM_MSGFORMAT_MODULE_COLOR      "\x03[%s]\x01 %s", modulefullname, translated
 #define TM_MSGFORMAT_MODULE_NOCOLOR    "[%s] %s", modulefullname, translated
-#define TM_MSGFORMAT_BOTH_COLOR        "\x04[%s::\x03%s] \x01%s", PROJECT_FULLNAME, modulefullname, translated
+#define TM_MSGFORMAT_BOTH_COLOR        "\x04[%s::\x03%s]\x01 %s", PROJECT_FULLNAME, modulefullname, translated
 #define TM_MSGFORMAT_BOTH_NOCOLOR      "[%s::%s] %s", PROJECT_FULLNAME, modulefullname, translated
 
 /**
