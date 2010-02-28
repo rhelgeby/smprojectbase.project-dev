@@ -158,63 +158,6 @@ stock String:g_ProjectEventDisplay[ProjectEvents][] = {
 };
 
 /**
- * The number of cells used to store all the event enable data in enum ProjectEvents. (above)
- * Keep this updated as ProjectEvents is modified. 
- */
-
-// Number of defines for cross-game/custom events.
-#define EVENT_COUNT_MULTI 13
-
-// Define how many events there are for each game.
-
-// CS:S event count.
-#if defined PROJECT_GAME_CSS
-  #define EVENT_COUNT_CSS 9     // <-- Number of CSS events.
-#else
-  #define EVENT_COUNT_CSS 0
-#endif
-
-// DOD event count.
-#if defined PROJECT_GAME_DOD
-  #define EVENT_COUNT_DOD 0     // <-- Number of DOD events.
-#else
-  #define EVENT_COUNT_DOD 0
-#endif
-
-// HL2DM event count.
-#if defined PROJECT_GAME_HL2DM
-  #define EVENT_COUNT_HL2DM 0     // <-- Number of HL2DM events.
-#else
-  #define EVENT_COUNT_HL2DM 0
-#endif
-
-// TF2 event count.
-#if defined PROJECT_GAME_TF2
-  #define EVENT_COUNT_TF2 0     // <-- Number of TF2 events.
-#else
-  #define EVENT_COUNT_TF2 0
-#endif
-
-// L4D event count.
-#if defined PROJECT_GAME_L4D
-  #define EVENT_COUNT_L4D 0     // <-- Number of L4D events.
-#else
-  #define EVENT_COUNT_L4D 0
-#endif
-
-// L4D2 event count.
-#if defined PROJECT_GAME_L4D2   // <-- Number of L4D2 events.
-  #define EVENT_COUNT_L4D2 0
-#else
-  #define EVENT_COUNT_L4D2 0
-#endif
-
-/**
- * All above defines are added up.  0 is used for games not supported.
- */
-#define EVENT_DATA_CELL_COUNT   EVENT_COUNT_MULTI + EVENT_COUNT_CSS + EVENT_COUNT_DOD + EVENT_COUNT_HL2DM + EVENT_COUNT_TF2 + EVENT_COUNT_L4D + EVENT_COUNT_L4D2
-
-/**
  * Datatypes that can be passed with each event to modules.
  * Don't touch this!
  */
