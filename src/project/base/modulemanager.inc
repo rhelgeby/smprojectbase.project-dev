@@ -219,6 +219,7 @@ stock ModuleMgr_Disable(Module:module)
         // Send this event only to the module being disabled.
         new Module:modules[2] = {INVALID_MODULE, ...};
         modules[0] = module;
+        
         EventMgr_Forward(Event_OnMyModuleDisable, g_CommonEventData1, 0, 0, g_CommonDataType1, modules);
     #endif
     
@@ -250,7 +251,10 @@ stock ModuleMgr_Enable(Module:module)
         // Send this event only to the module being enabled.
         new Module:modules[2] = {INVALID_MODULE, ...};
         modules[0] = module;
-        EventMgr_Forward(Event_OnMyModuleEnable, g_CommonEventData1, 0, 0, g_CommonDataType1, modules);
+        
+        new Action:result = EventMgr_Forward(Event_OnMyModuleEnable, g_CommonEventData1, 0, 0, g_CommonDataType1, modules);
+        if (result == Plugin_Handled)
+            ModuleMgr_WriteCell(module, ModuleData_Disabled, true);
     #endif
 }
 

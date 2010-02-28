@@ -141,6 +141,15 @@ public <FuncPrefix>_OnMyModuleEnable()
 }
 
 /**
+ * The module that hooked this event callback has been enabled.
+ * 
+ * @return      Return Plugin_Handled to stop load, and Plugin_Continue to allow it.
+ */
+public Action:<FuncPrefix>_OnMyModuleEnable()
+{
+}
+
+/**
  * A module has been disabled.
  */
 public <FuncPrefix>_OnModuleDisable(Module:module)
