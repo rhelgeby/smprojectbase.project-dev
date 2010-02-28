@@ -44,7 +44,7 @@
  */
 enum ConfigData
 {
-    Function:ConfigData_ReloadFunc,           /** This function is called when the config should be reloaded. */
+    Function:ConfigData_ReloadFunc,         /** This function is called when the config should be reloaded. */
     String:ConfigData_Path[CM_DATA_PATH]    /** The path relative to the sourcemod/ folder to the config file. */
 }
 
@@ -182,7 +182,7 @@ stock ConfigMgr_OnPrintModuleInfo(client, Module:module)
  * @param configreloadfunc  This name of the function that will be called when the config file is being reloaded.
  *                          Set this as a null string to disable the reload function.
  *                          Prototype is right above this comment block.
- * @param configpath        The path to the config file relative to sourcemod/.
+ * @param configpath        The path to the config file relative to sourcemod/.  "" to bypass validation.  See ConfigMgr_ValidateFile for later validation.
  * @param configindex       Index of the module's config file. See CM_CONFIGINDEX_* defines.
  * 
  * @return                  RegResult_Success on success.  See enum ConfigRegistrationResults for other results.
@@ -200,20 +200,19 @@ stock ConfigRegistrationResults:ConfigMgr_Register(Module:module, const String:c
         return RegResult_LimitExceeded;
     }
     
-    // Check if the file is valid.
-    decl String:fullconfigpath[PLATFORM_MAX_PATH];
-    BuildPath(Path_SM, fullconfigpath, sizeof(fullconfigpath), configpath);
-    if (!FileExists(fullconfigpath))
+    // Bypass validation by using an empty path.
+    if (configpath[0] != 0)
     {
-        LogError("[Config Manager] Module \"%s\" trying to register a non-existant config file! (%s)", modulefullname, fullconfigpath);
-        return RegResult_Invalid;
-    }
-    
-    // Check if this path is already registered.
-    if (ConfigMgr_PathToIndex(module, configpath) > -1)
-    {
-        LogError("[Config Manager] Module \"%s\" can't register a config file (%s) more than once!", modulefullname, configpath);
-        return RegResult_Duplicate;
+        new bool:validated = ConfigMgr_ValidateFile(configpath);
+        if (!validated)
+            LogError("[Config Manager] Module \"%s\" trying to register a non-existant config file! (%s)", modulefullname, configpath);
+        
+        // Check if this path is already registered.
+        if (ConfigMgr_PathToIndex(module, configpath) > -1)
+        {
+            LogError("[Config Manager] Module \"%s\" can't register a config file (%s) more than once!", modulefullname, configpath);
+            return RegResult_Duplicate;
+        }
     }
     
     // Write the config data to the module data arrays.
@@ -221,6 +220,20 @@ stock ConfigRegistrationResults:ConfigMgr_Register(Module:module, const String:c
     ConfigMgr_WriteString(module, configindex, ConfigData_Path, CM_DATA_PATH, configpath);
     
     return RegResult_Success;
+}
+
+/**
+ * Validates a config file's existence.
+ * 
+ * @param configpath    The path to the config file.
+ */
+stock bool:ConfigMgr_ValidateFile(const String:configpath[])
+{
+    // Check if the file is valid.
+    decl String:fullconfigpath[PLATFORM_MAX_PATH];
+    BuildPath(Path_SM, fullconfigpath, sizeof(fullconfigpath), configpath);
+    
+    return FileExists(fullconfigpath);
 }
 
 /**
