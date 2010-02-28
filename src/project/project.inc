@@ -118,11 +118,6 @@ enum ModuleData
 }
 
 /**
- * The number of cells used to store all the data in enum ModuleData.
- */
-#define MODULE_DATA_CELL_COUNT 1 + 1 + CM_DATA_FULLNAME + CM_DATA_SHORTNAME + CM_DATA_DESCRIPTION
-
-/**
  * The longest string that can be stored in the module's data.
  */
 #define MODULE_DATA_LONGEST_STRING 256

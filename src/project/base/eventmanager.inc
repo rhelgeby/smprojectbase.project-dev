@@ -55,10 +55,9 @@
 #endif
 
 /**
- * The max number of cells needed for each of the event manager's allocated index.
+ * Dummy array used as a way to count the cells required to store module event data.
  */
-#define EM_DATA_MAX_CELLS EVENT_DATA_CELL_COUNT
-// The number of max cells needed is equal to the number of cells needed to store all data for enum ProjectEvents.
+stock g_DummyEventData[ProjectEvents];
 
 /**
  * Defines the block of data in the module data arrays that contains event function data.

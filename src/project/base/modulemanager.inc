@@ -36,6 +36,11 @@
 // ---------------
 
 /**
+ * Dummy array used as a way to count the cells required to store module data.
+ */
+stock g_DummyModuleData[ModuleData];
+
+/**
  * This is a macro that takes a module and returns the handle to it's data array.
  */
 #define MM_HANDLE_FROM_ID(%1) GetArrayCell(g_adtModuleList, _:%1)
@@ -44,12 +49,6 @@
  * Defines the block of data in the module data arrays that contains module-defined data.
  */
 #define MODULE_DATA g_iMMAllocatedIndexes[0]
-
-/**
- * The max number of cells needed for the module manager's allocated index.
- */
-#define MM_DATA_MAX_CELLS MODULE_DATA_CELL_COUNT
-// The number of max cells needed is equal to the number of cells needed to store all data for enum ModuleData.
 
 /**
  * Base array that contains all module data array handles.
@@ -92,23 +91,23 @@ ModuleMgr_OnPluginStart()
     ModuleMgr_Allocate(1, g_iMMAllocatedIndexes);
     
     // Initialize the max block size to the number of cells needed for the module manager.
-    g_iMMMaxBlockSize = MM_DATA_MAX_CELLS;
+    g_iMMMaxBlockSize = sizeof(g_DummyModuleData);
     
     // Now check each of the other base project files if they need more cells, and set the max to that if true.
     
     #if defined EVENT_MANAGER
-        if (EM_DATA_MAX_CELLS > g_iMMMaxBlockSize)
-            g_iMMMaxBlockSize = EM_DATA_MAX_CELLS;
+        if (sizeof(g_DummyEventData) > g_iMMMaxBlockSize)
+            g_iMMMaxBlockSize = sizeof(g_DummyEventData);
     #endif
     
     #if defined CONFIG_MANAGER
-        if (CM_DATA_MAX_CELLS > g_iMMMaxBlockSize)
-            g_iMMMaxBlockSize = CM_DATA_MAX_CELLS;
+        if (sizeof(g_DummyConfigData) > g_iMMMaxBlockSize)
+            g_iMMMaxBlockSize = sizeof(g_DummyConfigData);
     #endif
     
     #if defined LOG_MANAGER
-        if (LM_DATA_MAX_CELLS > g_iMMMaxBlockSize)
-            g_iMMMaxBlockSize = LM_DATA_MAX_CELLS;
+        if (LM_DATA_CELL_COUNT > g_iMMMaxBlockSize)
+            g_iMMMaxBlockSize = LM_DATA_CELL_COUNT;
     #endif
     
     // Create base command.

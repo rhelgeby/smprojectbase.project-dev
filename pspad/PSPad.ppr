@@ -26,6 +26,7 @@ Project
 			..\src\project\testmodule.inc
 		..\src\project.sp
 		..\src\project\project.inc
+		..\src\project\project_events.inc
 	-Translations
 		..\cstrike\addons\sourcemod\translations\project\projectbase.phrases.txt
 		..\cstrike\addons\sourcemod\translations\project\basecmd.phrases.txt

@@ -49,12 +49,6 @@ enum ConfigData
 }
 
 /**
- * The max number of cells needed for each of the config manager's allocated indexes.
- */
-#define CM_DATA_MAX_CELLS 1 + CM_DATA_PATH
-// Config manager needs the max number of configs multiplied by the max length of each path.
-
-/**
  * The max number of config files a single module can maintain.
  */
 #define CM_MODULE_MAX_CONFIGS 3
@@ -90,6 +84,11 @@ enum KvCache
 // ---------------
 //     Private
 // ---------------
+
+/**
+ * Dummy array used as a way to count the cells required to store module event data.
+ */
+stock g_DummyConfigData[ConfigData];
 
 /**
  * Defines the block of data in the module data arrays that contains config path data.

@@ -52,7 +52,7 @@ enum LogTypes
 /**
  * The max number of cells needed for the log manager's allocated index.
  */
-#define LM_DATA_MAX_CELLS 1
+#define LM_DATA_CELL_COUNT 1
 // Log manager only needs 1 cell for a boolean value.
 
 /**
