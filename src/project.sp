@@ -39,8 +39,8 @@
 // Base project includes.
 #include "project/base/versioninfo"
 #include "project/base/accessmanager"
-#include "project/base/logmanager"
 #include "project/base/translationsmanager"
+#include "project/base/logmanager"  // Translations manager needs to be included before log manager.
 #include "project/base/configmanager"
 #include "project/base/eventmanager"
 #include "project/base/modulemanager"

@@ -39,9 +39,24 @@
 	// **********************************
 
 	// {1}: the invalid module reference.
-	"ModuleMgr invalid module"
+	"ModuleMgr module invalid"
 	{
 		"#format"	"{1:s}"
 		"en"		"Invalid module: \"{1}\""
 	}
+
+	// {1}: the enabled module's fullname.
+	"ModuleMgr modules enable"
+	{
+		"#format"	"{1:s}"
+		"en"		"Enabled module: \"{1}\""
+	}
+
+	// {1}: the disabled module's fullname.
+	"ModuleMgr modules disable"
+	{
+		"#format"	"{1:s}"
+		"en"		"Disabled module: \"{1}\""
+	}
+
 }

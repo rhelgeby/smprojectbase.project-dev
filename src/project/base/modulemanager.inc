@@ -110,11 +110,8 @@ ModuleMgr_OnPluginStart()
             g_iMMMaxBlockSize = LM_DATA_CELL_COUNT;
     #endif
     
-    // Create base command.
-    #if defined PROJECT_BASE_CMD
-        // Register the base command of the project module system.
-        RegConsoleCmd(PROJECT_BASE_CMD, Command_Base, "The plugins base command to handle modules.");
-    #endif
+    // Register default base cmd sub-command tree.
+    BaseCmd_Init();
 }
 
 /**
@@ -133,6 +130,9 @@ ModuleMgr_OnPluginEnd()
         
         ModuleMgr_Unregister(module);
     }
+    
+    // Destroy base command data.
+    BaseCmd_Destroy();
 }
 
 // **********************************************
@@ -638,123 +638,162 @@ stock Handle:ModuleMgr_GetList()
 //                Base Command
 // **********************************************
 
-/**
- * Returns true if the project base cmd isn't available, false means it is available.
- */
-stock bool:ModuleMgr_CreateBackupCmd()
-{
-    new bool:create = false;
-    
-    #if !defined PROJECT_BASE_CMD
-        create = true;
-    #endif
-    
-    #if !defined TRANSLATIONS_MANAGER
-        create = true;
-    #endif
-    
-    return create;
-}
-
 #if defined PROJECT_BASE_CMD
 
 /**
- * Base command sub command types.
+ * Defines for the first element of the array above.
  */
-enum BaseSubCmdType
+#define BASECMD_SERVER 0
+#define BASECMD_CLIENT 1
+
+/**
+ * Base arrays that hold all sub-commands and their sub-commands.
+ */
+new Handle:g_hServerSubCmds;
+new Handle:g_hClientSubCmds;
+
+// **********************************************
+//              Base Command API
+// **********************************************
+
+/**
+ * Initialize the base command data containers.
+ */
+stock BaseCmd_Init()
 {
-    SubCmdType_Invalid = -1,    /** Invalid sub-command. */
-    SubCmdType_Command,         /** A command with no additional arguments. */
-    SubCmdType_CommandWithArg,  /** A command with a required argument. */
-    SubCmdType_Accessor         /** Accesses a deeper sub-section. */
+    // Create base command.
+    #if defined PROJECT_BASE_CMD
+        // Register the base command of the project module system.
+        RegConsoleCmd(PROJECT_BASE_CMD, Command_Base, "The plugins base command to handle modules.");
+    #endif
+    
+    g_hServerSubCmds = CreateKeyValues("basecmd_server");
+    g_hClientSubCmds = CreateKeyValues("basecmd_client");
+    
+    // Register default sub-commands.
+    BaseCmd_RegisterDefs();
 }
 
 /**
- * First level of base's commands and section accessors.
- * sm *<level1>* [level2] [arguments]
+ * Destroy the base command data.
  */
-new const String:g_BaseCmdsLvl1[][] = {
-    "credits",      // Command
-    "modules",      // Section Accessor
-    "version"       // Command
-};
-
-/**
- * Second level of the second first level section accessor.
- * Confused?  Rephrased: The sub-commands under the "modules" keyword.
- * sm <level1> *[level2]* [arguments]
- */
-//new const String:g_BaseCmdsLvl2[][][] = {   // Should use this when the compiler bug is fixed.
-new const String:g_BaseCmdsLvl2[][][32] = {
-    {"", "", "", "", "", "", ""},
-    {   "info",         // Command with argument
-        "list",         // Command
-        "enable",       // Command with argument
-        "refresh",      // Command
-        "reload",       // Command with argument
-        "disable",      // Command with argument
-        "disable_all"}, // Command
-    {"", "", "", "", "", "", ""}
-};
-
-/**
- * Macros to make accessing [0, x] indexes prettier by changing the bounds to [1, x+1]
- */
-#define BASECMD_LEVEL(%1) %1 - 1
-#define BASECMD_ARG(%1) %1 - 1
-
-/**
- * A list that indicates if any of the above sub-commands are commands or section accessors.
- */
-new const BaseSubCmdType:g_BaseSubCmdType[][] = {
-    {   SubCmdType_Command,
-        SubCmdType_Accessor,
-        SubCmdType_Command,
-        SubCmdType_Invalid,
-        SubCmdType_Invalid,
-        SubCmdType_Invalid,
-        SubCmdType_Invalid },
-    {
-        SubCmdType_CommandWithArg,
-        SubCmdType_Command,
-        SubCmdType_CommandWithArg,
-        SubCmdType_Command,
-        SubCmdType_CommandWithArg,
-        SubCmdType_CommandWithArg,
-        SubCmdType_Command}
-};
-
-/**
- * Finds the index the command is located at in the arrays above.
- * 
- * @param cmd       The command to search for.
- * @param level     The level the command is in.
- * @param cmdindex  If searching level 2, this is the level 1 cmd that the level 2 cmds are under.
- * 
- * @return      The index in the array where this command is at.  -1 if not found.
- */
-stock ModuleMgr_BaseCmdFind(const String:cmd[], level, cmdindex = -1)
+stock BaseCmd_Destroy()
 {
-    if (level == 1)
+    CloseHandle(g_hServerSubCmds);
+    CloseHandle(g_hClientSubCmds);
+}
+
+/**
+ * Common directions.
+ */
+// These would be the directions to a 1st-level sub-command.  (none)
+new String:g_dirBlank[1][16] = {""};
+
+/**
+ * Registers all default sub-commands.
+ */
+stock BaseCmd_RegisterDefs()
+{
+    // Create directions.
+    new String:dirModules[1][16] = {"modules"};
+    
+    // Server commands.
+    BaseCmd_Register(BASECMD_SERVER, g_dirBlank, 0, "credits", "BaseCmd_Credits");
+    BaseCmd_Register(BASECMD_SERVER, g_dirBlank, 0, "dumpcmdtree", "BaseCmd_DumpCmdTree");
+    BaseCmd_Register(BASECMD_SERVER, g_dirBlank, 0, "modules");
+    BaseCmd_Register(BASECMD_SERVER, g_dirBlank, 0, "version", "BaseCmd_Version");
+    
+    BaseCmd_Register(BASECMD_SERVER, dirModules, sizeof(dirModules), "enable",      "BaseCmd_Enable");
+    BaseCmd_Register(BASECMD_SERVER, dirModules, sizeof(dirModules), "disable",     "BaseCmd_Disable");
+    BaseCmd_Register(BASECMD_SERVER, dirModules, sizeof(dirModules), "disable_all", "BaseCmd_DisableAll");
+    BaseCmd_Register(BASECMD_SERVER, dirModules, sizeof(dirModules), "info",        "BaseCmd_Info");
+    BaseCmd_Register(BASECMD_SERVER, dirModules, sizeof(dirModules), "list",        "BaseCmd_List");
+    BaseCmd_Register(BASECMD_SERVER, dirModules, sizeof(dirModules), "refresh",     "BaseCmd_Refresh");
+    BaseCmd_Register(BASECMD_SERVER, dirModules, sizeof(dirModules), "reload",      "BaseCmd_Reload");
+    
+    // Client commands.
+    BaseCmd_Register(BASECMD_CLIENT, g_dirBlank, 0, "credits", "BaseCmd_Credits");
+    BaseCmd_Register(BASECMD_CLIENT, g_dirBlank, 0, "modules", "ModuleMgr_BaseCmdList");
+    BaseCmd_Register(BASECMD_CLIENT, g_dirBlank, 0, "version", "BaseCmd_Version");
+}
+
+/**
+ * Register a sub-command under the base command.
+ * 
+ * Note: If given non-existant directions they will be automatically created.
+ * 
+ * @param who           For the server or client.
+ * @param directions    The path to the sub-command being registered.
+ *                      Ex: "modules" would be the path to "list."  Blank if top-level sub-command.
+ * @param dircount      The number of elements (with values) in 'directions.'
+ * @param subcommand    The sub-command to register.  (Max length is 16 characters)
+ * @param callback      The function called when the sub-command is used.
+ */
+stock BaseCmd_Register(who, const String:directions[][16], dircount, const String:subcommand[], const String:callback[] = "")
+{
+    // Get the handle of the kv we are going to modify.
+    new Handle:kv = (who == BASECMD_SERVER) ? g_hServerSubCmds : g_hClientSubCmds;
+    KvRewind(kv);
+    
+    // This will take us to the depth we want to be at to create the new sub-command.
+    for (new dirindex = 0; dirindex < dircount; dirindex++)
     {
-        // Loop through level 1 cmds.
-        for (new iCmd = 0; iCmd < sizeof(g_BaseCmdsLvl1); iCmd++)
-        {
-            if (StrEqual(cmd, g_BaseCmdsLvl1[iCmd], false))
-                return iCmd;
-        }
-    }
-    else if (level == 2)
-    {
-        // Loop through level 2 cmds.
-        for (new iCmd = 0; iCmd < sizeof(g_BaseCmdsLvl1); iCmd++)
-        {
-            if (StrEqual(cmd, g_BaseCmdsLvl2[cmdindex][iCmd], false))
-                return iCmd;
-        }
+        // Check if the index is blank.
+        if (directions[dirindex][0] == 0)
+            break;
+        
+        KvJumpToKey(kv, directions[dirindex], true);
     }
     
-    return -1;
+    // Create the sub-command.
+    KvJumpToKey(kv, subcommand, true);
+    
+    // Now store its data.
+    if (callback[0] != 0)
+        KvSetString(kv, "__callback", callback);
+}
+
+/**
+ * Unregister a registered sub-command under the base command.
+ * 
+ * @param who           For the server or client.
+ * @param directions    The path to the sub-command being unregistered.
+ *                      Ex: "modules" would be the path to "list."  Blank if top-level sub-command.
+ * @param dircount      The number of elements (with values) in 'directions.'
+ * @param subcommand    The sub-command to unregister.
+ * 
+ * @return              True if the sub-command was unregistered, false if it didn't exist.
+ */
+stock bool:BaseCmd_Unregister(who, const String:directions[][16], dircount, const String:subcommand[], const String:callback[] = "")
+{
+    // Get the handle of the kv we are going to modify.
+    new Handle:kv = (who == BASECMD_SERVER) ? g_hServerSubCmds : g_hClientSubCmds;
+    KvRewind(kv);
+    
+    // This will take us to the depth we want to be at to create the new sub-command.
+    for (new dirindex = 0; dirindex < dircount; dirindex++)
+    {
+        // Check if the index is blank.
+        if (directions[dirindex][0] == 0)
+            break;
+        
+        if (!KvJumpToKey(kv, directions[dirindex]))
+            return false;
+    }
+    
+    return KvDeleteKey(kv, subcommand);
+}
+
+/**
+ * Returns the handle to the respective KV.
+ * 
+ * @param who   See BASECMD_* defines.
+ * 
+ * @return      The KV array handle depending on 'who' it's for.
+ */
+stock Handle:BaseCmd_GetKV(who)
+{
+    return (who == BASECMD_SERVER) ? g_hServerSubCmds : g_hClientSubCmds;
 }
 
 /**
@@ -766,297 +805,258 @@ stock ModuleMgr_BaseCmdFind(const String:cmd[], level, cmdindex = -1)
  */
 public Action:Command_Base(client, argc)
 {
-    if (client > SERVER_INDEX)
-        ModuleMgr_BaseCmdClient(client);
-    else
-        ModuleMgr_BaseCmdServer(client, argc);
+    // Derive 'who' from the client using the command.
+    new who = (client > 0 && client <= MaxClients) ? BASECMD_CLIENT : BASECMD_SERVER;
     
-    // Say that we handled the command so CS:S doesn't see it and print "Unknown command"
+    // Set to "server" if the server is using the command, "client" if client is.
+    new String:strWho[8];
+    strWho = (who == BASECMD_SERVER) ? "server" : "client";
+    
+    // Get all arguments.
+    new String:strArgs[argc + 1][16];
+    for (new arg = 0; arg <= argc; arg++)
+        GetCmdArg(arg, strArgs[arg], 16);
+    
+    // Build directions from the arguments.
+    
+    new Handle:kv = BaseCmd_GetKV(who);
+    KvRewind(kv);
+    
+    decl String:callback[33];
+    for (new arg = 1; arg <= argc; arg++)
+    {
+        // Invalid arguments given.
+        if (!KvJumpToKey(kv, strArgs[arg]))
+        {
+            argc = arg - 1;     // Pretend the invalid argument(s) never existed..
+            break;
+        }
+        
+        // If the value of the "__callback" key is returned, then call the function in it.
+        KvGetString(kv, "__callback", callback, sizeof(callback));
+        if (callback[0] != 0)
+        {
+            // Note, we can initialize a string in this loop because it's going to be broken.
+            new Handle:hLeftovers = CreateArray(32);
+            for (new _arg = arg + 1; _arg <= argc; _arg++)
+                PushArrayString(hLeftovers, strArgs[_arg]);
+            
+            // Call sub-command's callback function.
+            Call_StartFunction(GetMyHandle(), GetFunctionByName(GetMyHandle(), callback));
+            
+            Call_PushCell(client);
+            Call_PushCell(hLeftovers);
+            Call_PushCell(argc - arg);
+            
+            Call_Finish();
+            
+            CloseHandle(hLeftovers);
+            return Plugin_Handled;
+        }
+    }
+    
+    // Not enough arguments, or invalid argument found if this is reached.
+    
+    decl String:subcommand[16], String:phraseformat[64];
+    
+    // Print the title of the sub-commands about to be printed.
+    if (StrEqual(strArgs[argc], PROJECT_BASE_CMD, false))
+    {
+        Format(phraseformat, sizeof(phraseformat), "BaseCmd %s syntax", strWho);
+        ReplyToCommand(client, "%T", phraseformat, client, PROJECT_FULLNAME, PROJECT_BASE_CMD);
+    }
+    else
+    {
+        Format(phraseformat, sizeof(phraseformat), "BaseCmd %s %s syntax", strWho, strArgs[argc]);
+        ReplyToCommand(client, "%T", phraseformat, client, PROJECT_FULLNAME);
+    }
+    
+    // Print all of the valid sub-commands.
+    KvGotoFirstSubKey(kv);
+    do
+    {
+        KvGetSectionName(kv, subcommand, sizeof(subcommand));
+        
+        if (StrEqual(strArgs[argc], PROJECT_BASE_CMD, false))
+            Format(phraseformat, sizeof(phraseformat), "BaseCmd %s %s description", strWho, subcommand);
+        else
+            Format(phraseformat, sizeof(phraseformat), "BaseCmd %s %s %s description", strWho, strArgs[argc], subcommand);
+        
+        ReplyToCommand(client, "    %17s- %T", subcommand, phraseformat, client);
+    } while (KvGotoNextKey(kv));
+    
+    // Say that we handled the command so the game doesn't see it and print "Unknown command"
     return Plugin_Handled;
 }
 
+// **********************************************
+//           Base Command Callbacks
+// **********************************************
+
 /**
- * Handle PROJECT_BASE_CMD command when a client uses it.
+ * Base sub-command: "credits"
+ * Prints credit string to server or client.
  * 
- * @param client    The client index.
+ * @param client    The client using the command.
  */
-ModuleMgr_BaseCmdClient(client)
+public BaseCmd_Credits(client)
 {
-    decl String:arg[sizeof(g_BaseCmdsLvl1[])];
-    GetCmdArg(1, arg, sizeof(arg));
-    
-    // The "credits" command.
-    if (StrEqual(arg, g_BaseCmdsLvl1[0], false))
-    {
-        // Print credits.
-        ReplyToCommand(client, PROJECT_CREDITS);
-    }
-    // The "modules" command.
-    else if (StrEqual(arg, g_BaseCmdsLvl1[1], false))
-    {
-        // List modules.
-        ModuleMgr_PrintModules(client);
-    }
-    else
-    {
-        ReplyToCommand(client, "%t", "ModuleMgr cmd base client syntax", PROJECT_FULLNAME, PROJECT_VERSION, PROJECT_AUTHOR, PROJECT_BASE_CMD, PROJECT_BASE_CMD);
-        return;
-    }
+    // Print credits.
+    ReplyToCommand(client, PROJECT_CREDITS);
 }
 
 /**
- * Handle PROJECT_BASE_CMD command when the server uses it.
+ * Base sub-command: "dumpcmdtree"
+ * Dumps the entire tree of sub-commands to the specified file.
  * 
- * @param client    The client index.
- * @param argc      The number of arguments that the client sent with the command.
+ * @param client    The client using the command.
+ * @param hParams   An ADT array with all the leftover arguments in the command-string.  Don't close this!
+ * @param argc      The number of leftover arguments. (GetArraySize(hParams))
  */
-ModuleMgr_BaseCmdServer(client, argc)
+public BaseCmd_DumpCmdTree(client, Handle:hParams, argc)
 {
-    // Get all arguments.
-    if (argc == 0) argc++;
-    new String:strArgs[argc][32];
-    for (new arg = 1; arg <= argc; arg++)
-        GetCmdArg(arg, strArgs[BASECMD_ARG(arg)], 16);
-                                                   // ^^^ SHOULD BE sizeof(strArgs[].  But compiler bug.
-    decl String:phraseformat[64];
-    
-    // Level 1 validation.
-    
-    new bool:valid_exists = false;
-    new bool:valid_arg = false;
-    new iLvl1Cmd;
-    for (new iCmd = 0; iCmd < sizeof(g_BaseCmdsLvl1); iCmd++)
+    // Check if there are enough arguments.
+    if (argc < 1)
     {
-        if (StrEqual(g_BaseCmdsLvl1[iCmd], strArgs[BASECMD_ARG(1)], false))
-        {
-            valid_exists = true;
-            iLvl1Cmd = iCmd;
-            
-            // Set 'valid_arg' to true if an argument was given or if it doesn't need an argument.
-            // False if the command needs an argument and none was given.
-            if (g_BaseSubCmdType[BASECMD_LEVEL(1)][iCmd] == SubCmdType_CommandWithArg)
-                valid_arg = (argc >= 2) ? (bool:strArgs[BASECMD_ARG(2)][0]) : false;
-            else
-                valid_arg = true;
-            
-            break;
-        }
-    }
-    
-    // Print level 1 syntax.
-    if (!valid_exists)
-    {
-        PrintToServer("%T", "ModuleMgr cmd base lvl1 syntax", LANG_SERVER, PROJECT_FULLNAME, PROJECT_BASE_CMD, g_BaseCmdsLvl1[0], g_BaseCmdsLvl1[1], g_BaseCmdsLvl1[2]);
+        Project_PrintToServer("%T", "BaseCmd dumpcmdtree syntax", LANG_SERVER, PROJECT_BASE_CMD);
         return;
     }
     
-    // Print level 1 sub-command syntax.
-    if (!valid_arg)
+    decl String:path[PLATFORM_MAX_PATH];
+    GetArrayString(hParams, 0, path, sizeof(path));
+    
+    new Handle:kv = BaseCmd_GetKV(BASECMD_SERVER);
+    KvRewind(kv);
+    KeyValuesToFile(kv, path);
+}
+
+/**
+ * Base sub-command: "version"
+ * Prints plugin version info to server or client.
+ * 
+ * @param client    The client using the command.
+ */
+public BaseCmd_Version(client)
+{
+    #if defined VERSION_INFO
+        VersionPrint(client);
+    #else
+        Project_PrintToServer("%T", "Missing base component", LANG_SERVER, "versioninfo.inc");
+    #endif
+}
+
+/**
+ * Base sub-command: "modules enable <moduleID>"
+ * Enables a module.
+ * 
+ * @param client    The client using the command.
+ * @param hParams   An ADT array with all the leftover arguments in the command-string.  Don't close this!
+ * @param argc      The number of leftover arguments. (GetArraySize(hParams))
+ */
+public BaseCmd_Enable(client, Handle:hParams, argc)
+{
+    // Check if there are enough arguments.
+    if (argc < 1)
     {
-        // Format the phrase name, because it depends on which command is being entered.
-        Format(phraseformat, sizeof(phraseformat), "ModuleMgr cmd base lvl1 %s syntax", strArgs[BASECMD_ARG(1)]);
-        Project_PrintToServer("%T", phraseformat, LANG_SERVER);
+        Project_PrintToServer("%T", "ModuleMgr modules sub-command syntax", LANG_SERVER, PROJECT_BASE_CMD, "modules", "enable");
         return;
     }
     
-    // Level 2 validation.
+    decl String:strModuleID[16];
+    GetArrayString(hParams, 0, strModuleID, sizeof(strModuleID));
     
-    // If the level 1 sub-command is an accessor, then validate it's sub-command.
-    // Otherwise, validate this command string by leaving 'valid' as 'true'.
-    if (g_BaseSubCmdType[BASECMD_LEVEL(1)][iLvl1Cmd] == SubCmdType_Accessor)
-    {
-        valid_exists = false;
-        valid_arg = false;
-        for (new iSubCmd = 0; iSubCmd < sizeof(g_BaseCmdsLvl2[]); iSubCmd++)
-        {
-            if (StrEqual(g_BaseCmdsLvl2[iLvl1Cmd][iSubCmd], strArgs[BASECMD_ARG(2)], false))
-            {
-                valid_exists = true;
-                
-                // Set 'valid_arg' to true if an argument was given or if it doesn't need an argument.
-                // False if the command needs an argument and none was given.
-                if (g_BaseSubCmdType[BASECMD_LEVEL(2)][iSubCmd] == SubCmdType_CommandWithArg)
-                    valid_arg = (argc >= 3) ? (bool:strArgs[BASECMD_ARG(3)][0]) : false;
-                else
-                    valid_arg = true;
-                
-                break;
-            }
-        }
-        
-        // Print level 2 sub-command syntax.
-        if (!valid_exists)
-        {
-            // Format the phrase name, because it depends on which sub-command accessor is being used.
-            Format(phraseformat, sizeof(phraseformat), "ModuleMgr cmd base lvl2 %s syntax", strArgs[BASECMD_ARG(1)]);
-            PrintToServer("%T", phraseformat, LANG_SERVER, PROJECT_FULLNAME, g_BaseCmdsLvl2[iLvl1Cmd][0], g_BaseCmdsLvl2[iLvl1Cmd][1], g_BaseCmdsLvl2[iLvl1Cmd][2], g_BaseCmdsLvl2[iLvl1Cmd][3], g_BaseCmdsLvl2[iLvl1Cmd][4], g_BaseCmdsLvl2[iLvl1Cmd][5], g_BaseCmdsLvl2[iLvl1Cmd][6]);
-            return;
-        }
-        
-        // Print level 2 sub-sub-command syntax.
-        if (!valid_arg)
-        {
-            // Format the phrase name, because it depends on which command is being entered.
-            Format(phraseformat, sizeof(phraseformat), "ModuleMgr cmd base lvl2 %s %s syntax", strArgs[BASECMD_ARG(1)], strArgs[BASECMD_ARG(2)]);
-            Project_PrintToServer("%T", phraseformat, LANG_SERVER, PROJECT_BASE_CMD, strArgs[BASECMD_ARG(1)], strArgs[BASECMD_ARG(2)]);
-            return;
-        }
-    }
-    
-    // Pass off the validified arguments to another function.
-    ModuleMgr_BaseCmdParse(client, strArgs);
-}
-
-/**
- * The "control center" that redirects all commands to their respective functions.
- * 
- * @param client    The client calling the command.
- * @param strArgs   The list of arguments that were validated by the base command callback.
- */
-ModuleMgr_BaseCmdParse(client, const String:strArgs[][])
-{
-    decl String:phraseformat[64];
-    
-    // The "credits" sub-command.
-    if (StrEqual(strArgs[BASECMD_ARG(1)], g_BaseCmdsLvl1[0], false))
-    {
-        // Print credits.
-        ReplyToCommand(client, PROJECT_CREDITS);
-    }
-    // The "modules" accessor.
-    else if (StrEqual(strArgs[BASECMD_ARG(1)], g_BaseCmdsLvl1[1], false))
-    {
-        // Find the array index that the cmd is in, to access it's sub-commands for checking.
-        new cmdindex = ModuleMgr_BaseCmdFind(strArgs[BASECMD_ARG(1)], 1);
-        
-        // The "info" sub-command.
-        if (StrEqual(strArgs[BASECMD_ARG(2)], g_BaseCmdsLvl2[cmdindex][0], false))
-        {
-            ModuleMgr_PrintModuleInfo(client, strArgs[BASECMD_ARG(3)]);
-        }
-        // The "list" sub-command.
-        else if (StrEqual(strArgs[BASECMD_ARG(2)], g_BaseCmdsLvl2[cmdindex][1], false))
-        {
-            ModuleMgr_PrintModules(client);
-        }
-        // The "enable" sub-command.
-        else if (StrEqual(strArgs[BASECMD_ARG(2)], g_BaseCmdsLvl2[cmdindex][2], false))
-        {
-            // Validate the module ID/shortname.
-            new Module:module = ModuleMgr_FindByID(StringToInt(strArgs[BASECMD_ARG(3)]), strArgs[BASECMD_ARG(3)]);
-            if (module == INVALID_MODULE)
-            {
-                Project_PrintToServer("%T", "ModuleMgr invalid module", LANG_SERVER, strArgs[BASECMD_ARG(3)]);
-                return;
-            }
-            
-            ModuleMgr_Enable(module);
-            
-            decl String:modulefullname[CM_DATA_FULLNAME];
-            ModuleMgr_ReadString(module, ModuleData_FullName, modulefullname, sizeof(modulefullname));
-            
-            Format(phraseformat, sizeof(phraseformat), "ModuleMgr cmd base lvl2 modules %s", g_BaseCmdsLvl2[cmdindex][2]);
-            Project_PrintToServer("%T", phraseformat, LANG_SERVER, modulefullname);
-        }
-        // The "refresh" sub-command.
-        else if (StrEqual(strArgs[BASECMD_ARG(2)], g_BaseCmdsLvl2[cmdindex][3], false))
-        {
-            // Loop through all the modules.
-            new Module:module;
-            new count = MODULE_COUNT;
-            for (new moduleindex = 0; moduleindex < count; moduleindex++)
-            {
-                // Read moduleindex as a Module type.
-                module = Module:moduleindex;
-                
-                ModuleMgr_Disable(module);
-                ModuleMgr_Enable(module);
-            }
-            
-            Format(phraseformat, sizeof(phraseformat), "ModuleMgr cmd base lvl2 modules %s", g_BaseCmdsLvl2[cmdindex][3]);
-            Project_PrintToServer("%T", phraseformat, LANG_SERVER);
-        }
-        // The "reload" sub-command.
-        else if (StrEqual(strArgs[BASECMD_ARG(2)], g_BaseCmdsLvl2[cmdindex][4], false))
-        {
-            // Validate the module ID/shortname.
-            new Module:module = ModuleMgr_FindByID(StringToInt(strArgs[BASECMD_ARG(3)]), strArgs[BASECMD_ARG(3)]);
-            if (module == INVALID_MODULE)
-            {
-                Project_PrintToServer("%T", "ModuleMgr invalid module", LANG_SERVER, strArgs[BASECMD_ARG(3)]);
-                return;
-            }
-            
-            ModuleMgr_Disable(module);
-            ModuleMgr_Enable(module);
-            
-            decl String:modulefullname[CM_DATA_FULLNAME];
-            ModuleMgr_ReadString(module, ModuleData_FullName, modulefullname, sizeof(modulefullname));
-            
-            Format(phraseformat, sizeof(phraseformat), "ModuleMgr cmd base lvl2 modules %s", g_BaseCmdsLvl2[cmdindex][4]);
-            Project_PrintToServer("%T", phraseformat, LANG_SERVER, modulefullname);
-        }
-        // The "disable" sub-command.
-        else if (StrEqual(strArgs[BASECMD_ARG(2)], g_BaseCmdsLvl2[cmdindex][5], false))
-        {
-            // Validate the module ID/shortname.
-            new Module:module = ModuleMgr_FindByID(StringToInt(strArgs[BASECMD_ARG(3)]), strArgs[BASECMD_ARG(3)]);
-            if (module == INVALID_MODULE)
-            {
-                Project_PrintToServer("%T", "ModuleMgr invalid module", LANG_SERVER, strArgs[BASECMD_ARG(3)]);
-                return;
-            }
-            
-            ModuleMgr_Disable(module);
-            
-            decl String:modulefullname[CM_DATA_FULLNAME];
-            ModuleMgr_ReadString(module, ModuleData_FullName, modulefullname, sizeof(modulefullname));
-            
-            Format(phraseformat, sizeof(phraseformat), "ModuleMgr cmd base lvl2 modules %s", g_BaseCmdsLvl2[cmdindex][5]);
-            Project_PrintToServer("%T", phraseformat, LANG_SERVER, modulefullname);
-        }
-        // The "disable_all" sub-command.
-        else if (StrEqual(strArgs[BASECMD_ARG(2)], g_BaseCmdsLvl2[cmdindex][6], false))
-        {
-            // Loop through all the modules.
-            new Module:module;
-            new count = MODULE_COUNT;
-            for (new moduleindex = 0; moduleindex < count; moduleindex++)
-            {
-                // Read moduleindex as a Module type.
-                module = Module:moduleindex;
-                
-                ModuleMgr_Disable(module);
-            }
-            
-            Format(phraseformat, sizeof(phraseformat), "ModuleMgr cmd base lvl2 modules %s", g_BaseCmdsLvl2[cmdindex][6]);
-            Project_PrintToServer("%T", phraseformat, LANG_SERVER);
-        }
-    }
-    // The "version" sub-command.
-    else if (StrEqual(strArgs[BASECMD_ARG(1)], g_BaseCmdsLvl1[2], false))
-    {
-        #if defined VERSION_INFO
-            VersionPrint(client);
-        #else
-            Project_PrintToServer("%T", "Missing base component", LANG_SERVER, "versioninfo.inc");
-        #endif
-    }
-}
-
-/**
- * Prints the information stored about a module.
- * 
- * @param client        Client to print information to.
- * @param strModuleID   Either the module's shortname or it's module ID.
- */
-stock ModuleMgr_PrintModuleInfo(client, const String:strModuleID[])
-{
-    // Validate the module ID/shortname.
     new Module:module = ModuleMgr_FindByID(StringToInt(strModuleID), strModuleID);
     if (module == INVALID_MODULE)
     {
-        Project_PrintToServer("%T", "ModuleMgr invalid module", LANG_SERVER, strModuleID);
+        Project_PrintToServer("%T", "ModuleMgr module invalid", LANG_SERVER, strModuleID);
+        return;
+    }
+    
+    ModuleMgr_Enable(module);
+    
+    // Verify that the module didn't refuse to load.
+    if (ModuleMgr_IsDisabled(module))
+        return;
+    
+    decl String:modulefullname[CM_DATA_FULLNAME];
+    ModuleMgr_ReadString(module, ModuleData_FullName, modulefullname, sizeof(modulefullname));
+    Project_PrintToServer("%T", "ModuleMgr modules enable", LANG_SERVER, modulefullname);
+}
+
+/**
+ * Base sub-command: "modules disable <moduleID>"
+ * Disables a module.
+ * 
+ * @param client    The client using the command.
+ * @param hParams   An ADT array with all the leftover arguments in the command-string.  Don't close this!
+ * @param argc      The number of leftover arguments. (GetArraySize(hParams))
+ */
+public BaseCmd_Disable(client, Handle:hParams, argc)
+{
+    // Check if there are enough arguments.
+    if (argc < 1)
+    {
+        Project_PrintToServer("%T", "ModuleMgr modules sub-command syntax", LANG_SERVER, PROJECT_BASE_CMD, "modules", "disable");
+        return;
+    }
+    
+    decl String:strModuleID[16];
+    GetArrayString(hParams, 0, strModuleID, sizeof(strModuleID));
+    
+    new Module:module = ModuleMgr_FindByID(StringToInt(strModuleID), strModuleID);
+    if (module == INVALID_MODULE)
+    {
+        Project_PrintToServer("%T", "ModuleMgr module invalid", LANG_SERVER, strModuleID);
+        return;
+    }
+    
+    ModuleMgr_Disable(module);
+    
+    decl String:modulefullname[CM_DATA_FULLNAME];
+    ModuleMgr_ReadString(module, ModuleData_FullName, modulefullname, sizeof(modulefullname));
+    Project_PrintToServer("%T", "ModuleMgr modules disable", LANG_SERVER, modulefullname);
+}
+
+/**
+ * Base sub-command: "modules disable_all <moduleID>"
+ * Disables all modules.
+ * 
+ * @param client    The client using the command.
+ */
+public BaseCmd_DisableAll(client)
+{
+    // Loop through all the modules.
+    new count = MODULE_COUNT;
+    for (new moduleindex = 0; moduleindex < count; moduleindex++)
+        ModuleMgr_Disable(Module:moduleindex);
+    
+    Project_PrintToServer("%T", "ModuleMgr modules disable_all", LANG_SERVER);
+}
+
+/**
+ * Base sub-command: "modules info <moduleID>"
+ * Prints information about a module.
+ * 
+ * @param client    The client using the command.
+ * @param hParams   An ADT array with all the leftover arguments in the command-string.  Don't close this!
+ * @param argc      The number of leftover arguments. (GetArraySize(hParams))
+ */
+public BaseCmd_Info(client, Handle:hParams, argc)
+{
+    // Check if there are enough arguments.
+    if (argc < 1)
+    {
+        Project_PrintToServer("%T", "ModuleMgr modules sub-command syntax", LANG_SERVER, PROJECT_BASE_CMD, "modules", "disable");
+        return;
+    }
+    
+    decl String:strModuleID[16];
+    GetArrayString(hParams, 0, strModuleID, sizeof(strModuleID));
+    
+    new Module:module = ModuleMgr_FindByID(StringToInt(strModuleID), strModuleID);
+    if (module == INVALID_MODULE)
+    {
+        Project_PrintToServer("%T", "ModuleMgr module invalid", LANG_SERVER, strModuleID);
         return;
     }
     
@@ -1079,7 +1079,7 @@ stock ModuleMgr_PrintModuleInfo(client, const String:strModuleID[])
     #endif
     
     // Print all the data stored in the module manager itself.
-    PrintToServer("%T", "ModuleMgr cmd base lvl2 modules info print", LANG_SERVER, modulefullname, moduleshortname, moduledesc, strModuleEnabled);
+    PrintToServer("%T", "ModuleMgr modules info", LANG_SERVER, modulefullname, moduleshortname, moduledesc, strModuleEnabled);
     
     // Forward event to other project base components.
     #if defined EVENT_MANAGER
@@ -1100,11 +1100,12 @@ stock ModuleMgr_PrintModuleInfo(client, const String:strModuleID[])
 }
 
 /**
- * Prints all registered modules.
+ * Base sub-command: "modules list <moduleID>"
+ * Show registered modules.
  * 
- * @param client        Client to print information to.
+ * @param client    The client using the command.
  */
-stock ModuleMgr_PrintModules(client)
+public BaseCmd_List(client)
 {
     decl String:modulefullname[CM_DATA_FULLNAME];
     decl String:moduleshortname[CM_DATA_SHORTNAME];
@@ -1136,10 +1137,10 @@ stock ModuleMgr_PrintModules(client)
         
         // If the module is hidden then don't list it.
         if (bool:ModuleMgr_ReadCell(module, ModuleData_Hidden))
-            Format(line, sizeof(line), "%T", "ModuleMgr cmd base lvl2 modules list print hidden", client);
+            Format(line, sizeof(line), "%T", "ModuleMgr modules list hidden", client);
         
         else
-            Format(line, sizeof(line), "%T", "ModuleMgr cmd base lvl2 modules list print", client, modulefullname, strModuleEnabled, moduleshortname);
+            Format(line, sizeof(line), "%T", "ModuleMgr modules list", client, modulefullname, strModuleEnabled, moduleshortname);
         
         // Format on the moduleID?
         (client == SERVER_INDEX) ?  Format(line, sizeof(line), "  %02d %s", moduleID, line) :
@@ -1147,5 +1148,67 @@ stock ModuleMgr_PrintModules(client)
         
         ReplyToCommand(client, line);
     }
+}
+
+/**
+ * Base sub-command: "modules refresh <moduleID>"
+ * Reloads/refreshes all registered modules.
+ * 
+ * @param client    The client using the command.
+ */
+public BaseCmd_Refresh(client)
+{
+    // Loop through all the modules.
+    new Module:module;
+    new count = MODULE_COUNT;
+    for (new moduleindex = 0; moduleindex < count; moduleindex++)
+    {
+        // Read moduleindex as a Module type.
+        module = Module:moduleindex;
+        
+        ModuleMgr_Disable(module);
+        ModuleMgr_Enable(module);
+    }
+    
+    Project_PrintToServer("%T", "ModuleMgr modules refresh", LANG_SERVER);
+}
+
+/**
+ * Base sub-command: "modules reload <moduleID>"
+ * Reloads a module.
+ * 
+ * @param client    The client using the command.
+ * @param hParams   An ADT array with all the leftover arguments in the command-string.  Don't close this!
+ * @param argc      The number of leftover arguments. (GetArraySize(hParams))
+ */
+public BaseCmd_Reload(client, Handle:hParams, argc)
+{
+    // Check if there are enough arguments.
+    if (argc < 1)
+    {
+        Project_PrintToServer("%T", "ModuleMgr modules sub-command syntax", LANG_SERVER, PROJECT_BASE_CMD, "modules", "reload");
+        return;
+    }
+    
+    decl String:strModuleID[16];
+    GetArrayString(hParams, 0, strModuleID, sizeof(strModuleID));
+    
+    new Module:module = ModuleMgr_FindByID(StringToInt(strModuleID), strModuleID);
+    if (module == INVALID_MODULE)
+    {
+        Project_PrintToServer("%T", "ModuleMgr module invalid", LANG_SERVER, strModuleID);
+        return;
+    }
+    
+    ModuleMgr_Disable(module);
+    ModuleMgr_Enable(module);
+    
+    // Verify that the module didn't refuse to load.
+    if (ModuleMgr_IsDisabled(module))
+        return;
+    
+    decl String:modulefullname[CM_DATA_FULLNAME];
+    ModuleMgr_ReadString(module, ModuleData_FullName, modulefullname, sizeof(modulefullname));
+    Project_PrintToServer("%T", "ModuleMgr modules reload", LANG_SERVER, modulefullname);
 }
 #endif

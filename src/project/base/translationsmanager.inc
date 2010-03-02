@@ -210,6 +210,7 @@ stock TransMgr_PrintText(client, MsgFormatting:msgformat, MsgTypes:msgtype, Modu
  * @param literal   True to print the last variable as a string, instead of translating it.
  * @param any       The translations phrase follow by formatting parameters.
  * 
+ * @error           Function doesn't support MsgType_Server or MsgType_Reply because there's no target client.
  */
 stock TransMgr_PrintTextAll(bool:server, bool:admin, MsgFormatting:msgformat, MsgTypes:msgtype, Module:module = INVALID_MODULE, bool:literal = false, any:...)
 {

@@ -160,7 +160,7 @@ stock ConfigMgr_OnPrintModuleInfo(client, Module:module)
     }
     
     // Print all the data stored in the module manager itself.
-    PrintToServer("%T", "ConfigMgr cmd base lvl2 modules info print", LANG_SERVER, configpathlist);
+    PrintToServer("%T", "ConfigMgr modules info", LANG_SERVER, configpathlist);
 }
 
 // **********************************************
@@ -617,7 +617,7 @@ public Action:Command_ReloadConfig(argc)
         
         if (module == INVALID_MODULE)
         {
-            Project_PrintToServer("%T", "ModuleMgr invalid module", LANG_SERVER, strModuleID);
+            Project_PrintToServer("%T", "ModuleMgr module invalid", LANG_SERVER, strModuleID);
             continue;
         }
         
@@ -625,7 +625,7 @@ public Action:Command_ReloadConfig(argc)
         ConfigMgr_ReloadConfigs(module);
     }
     
-    // Say that we handled the command so CS:S doesn't see it and print "Unknown command"
+    // Say that we handled the command so the game doesn't see it and print "Unknown command"
     return Plugin_Handled;
 }
 

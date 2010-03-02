@@ -147,7 +147,7 @@ stock LogMgr_OnPrintModuleInfo(client, Module:module)
     #endif
     
     // Print the module event info.
-    PrintToServer("%T", "LogMgr cmd base lvl2 modules info print", LANG_SERVER, strWhiteList);
+    PrintToServer("%T", "LogMgr modules info", LANG_SERVER, strWhiteList, PROJECT_CVAR_PREFIX);
 }
 
 // **********************************************
@@ -330,7 +330,7 @@ public Action:Command_LogWhitelistAdd(argc)
         
         if (module == INVALID_MODULE)
         {
-            Project_PrintToServer("%T", "ModuleMgr invalid module", LANG_SERVER, strModuleID);
+            Project_PrintToServer("%T", "ModuleMgr module invalid", LANG_SERVER, strModuleID);
             continue;
         }
         
@@ -341,7 +341,7 @@ public Action:Command_LogWhitelistAdd(argc)
         Project_PrintToServer("%T", "LogMgr cmd whitelistadd", LANG_SERVER, modulefullname);
     }
     
-    // Say that we handled the command so CS:S doesn't see it and print "Unknown command"
+    // Say that we handled the command so the game doesn't see it and print "Unknown command"
     return Plugin_Handled;
 }
 
@@ -372,7 +372,7 @@ public Action:Command_LogWhitelistRemove(argc)
         
         if (module == INVALID_MODULE)
         {
-            Project_PrintToServer("%T", "ModuleMgr invalid module", LANG_SERVER, strModuleID);
+            Project_PrintToServer("%T", "ModuleMgr module invalid", LANG_SERVER, strModuleID);
             continue;
         }
         
@@ -383,7 +383,7 @@ public Action:Command_LogWhitelistRemove(argc)
         Project_PrintToServer("%T", "LogMgr cmd whitelistremove", LANG_SERVER, modulefullname);
     }
     
-    // Say that we handled the command so CS:S doesn't see it and print "Unknown command"
+    // Say that we handled the command so the game doesn't see it and print "Unknown command"
     return Plugin_Handled;
 }
 

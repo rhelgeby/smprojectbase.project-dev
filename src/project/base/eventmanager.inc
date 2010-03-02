@@ -153,7 +153,7 @@ stock EventMgr_OnPrintModuleInfo(client, Module:module)
         Format(registeredevents, sizeof(registeredevents), "%t", "_None");
     
     // Print the module event info.
-    PrintToServer("%T", "EventMgr cmd base lvl2 modules info print", LANG_SERVER, registeredevents);
+    PrintToServer("%T", "EventMgr modules info", LANG_SERVER, registeredevents);
 }
 
 // **********************************************

@@ -39,11 +39,10 @@
  */
 VersionInfo_OnPluginStart()
 {
-    if (ModuleMgr_CreateBackupCmd())
-    {
+    #if !defined PROJECT_BASE_CMD
         // Create a version information print command.
         Project_RegConsoleCmd("version", Command_Version, "Prints version info about this project.");
-    }
+    #endif
     
     #if defined PROJECT_PUBLIC_CVAR
         decl String:publiccvarvalue[32];
@@ -74,7 +73,7 @@ public Action:Command_Version(client, argc)
 {
     VersionPrint(client);
     
-    // Say that we handled the command so CS:S doesn't see it and print "Unknown command"
+    // Say that we handled the command so the game doesn't see it and print "Unknown command"
     return Plugin_Handled;
 }
 
