@@ -99,22 +99,35 @@ enum Module
 #define MODULE_DATA_DESCRIPTION (1 << 4)
 
 /**
- * The max string lengths of module data variables.
+ * The max string/array lengths of module data variables.
  */
-#define CM_DATA_FULLNAME    32
-#define CM_DATA_SHORTNAME   16
-#define CM_DATA_DESCRIPTION 256
+#define CM_DATA_FULLNAME        32
+#define CM_DATA_SHORTNAME       16
+#define CM_DATA_DESCRIPTION     256
+#define CM_DATA_DEPENDENCIES    8
 
 /**
  * All the data modules need to register.
  */
 enum ModuleData
 {
-    bool:ModuleData_Disabled = 0,                       /** True if the module is disabled. */
-    bool:ModuleData_Hidden,                             /** True to hide the module from console. (base cmd can't touch it) */
-    String:ModuleData_FullName[CM_DATA_FULLNAME],       /** Used for displaying modules. */
-    String:ModuleData_ShortName[CM_DATA_SHORTNAME],     /** Used for client interaction with modules. */
-    String:ModuleData_Description[CM_DATA_DESCRIPTION], /** A description of the module */
+    bool:ModuleData_Disabled = 0,                           /** True if the module is disabled. */
+    bool:ModuleData_Hidden,                                 /** True to hide the module from console. (base cmd can't touch it) */
+    String:ModuleData_FullName[CM_DATA_FULLNAME],           /** Used for displaying modules. */
+    String:ModuleData_ShortName[CM_DATA_SHORTNAME],         /** Used for client interaction with modules. */
+    String:ModuleData_Description[CM_DATA_DESCRIPTION],     /** A description of the module */
+    Module:ModuleData_Dependencies[CM_DATA_DEPENDENCIES]    /** An array of module IDs that the module depends on.  {INVALID_MODULE} = no dependencies.  Must end with INVALID_MODULE. */
+}
+
+/**
+ * Return values for ModuleMgr_Enable/Disable
+ */
+enum ModuleToggleQuery
+{
+    ToggleQuery_Successful, /** The module was successfully enabled/disabled. */
+    ToggleQuery_Stopped,    /** The query was stopped because it was redundant. (already enabled/disabled) */
+    ToggleQuery_Dependent,  /** Enable - The module couldn't be loaded because at least one dependency isn't loaded. */
+                            /** Disable - Other dependent modules were disabled as a result of this module being disabled. */
 }
 
 /**

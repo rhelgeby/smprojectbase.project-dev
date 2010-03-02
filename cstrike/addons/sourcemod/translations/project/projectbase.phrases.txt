@@ -53,10 +53,45 @@
 	}
 
 	// {1}: the disabled module's fullname.
+	"ModuleMgr modules enable stopped"
+	{
+		"#format"	"{1:s}"
+		"en"		"Module already enabled: \"{1}\""
+	}
+
+	// {1}: the disabled module's fullname.
+	"ModuleMgr modules enable dependent"
+	{
+		"#format"	"{1:s}"
+		"en"		"At least one dependency for module \"{1}\" isn't enabled."
+	}
+
+	// {1}: the disabled module's fullname.
 	"ModuleMgr modules disable"
 	{
 		"#format"	"{1:s}"
 		"en"		"Disabled module: \"{1}\""
+	}
+
+	// {1}: the disabled module's fullname.
+	"ModuleMgr modules disable stopped"
+	{
+		"#format"	"{1:s}"
+		"en"		"Module already disabled: \"{1}\""
+	}
+
+	// {1}: the disabled module's fullname.
+	"ModuleMgr modules disable dependent"
+	{
+		"#format"	"{1:s}"
+		"en"		"Disabled module: \"{1}\".  (Other module(s) dependent on this one were also disabled)"
+	}
+
+	// {1}: the disabled module's fullname.
+	"ModuleMgr modules refuse"
+	{
+		"#format"	"{1:s}"
+		"en"		"Module refused to be enabled: \"{1}\""
 	}
 
 }

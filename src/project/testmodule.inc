@@ -38,11 +38,22 @@ stock Module:g_iTestModules[NUM_MODULES];
  */
 public TestModule_OnPluginStart()
 {
-    new moduledata2[ModuleData] = {false, false, "", "testmoduleblank", "Module designed to fail to load."};
+    new moduledata2[ModuleData] = {false, false, "", "testmoduleblank", "Module designed to fail to load.", {INVALID_MODULE}};
     ModuleMgr_Register(moduledata2);
     
-    new moduledata3[ModuleData] = {false, false, "Fail Module", "", "Module designed to fail to load."};
+    new moduledata3[ModuleData] = {false, false, "Fail Module", "", "Module designed to fail to load.", {INVALID_MODULE}};
     ModuleMgr_Register(moduledata3);
+    
+    new moduledata4[ModuleData] = {true, false, "Depend On Me", "dependonme", "Module to depend on.", {INVALID_MODULE}};
+    new Module:moduleDepend = ModuleMgr_Register(moduledata4);
+    
+    new Module:dependencies[8];
+    dependencies[0] = moduleDepend;
+    dependencies[1] = INVALID_MODULE;
+    
+    new moduledata5[ModuleData] = {false, false, "Depender", "depender", "Module that is depending.", {INVALID_MODULE}};
+    moduledata5[ModuleData_Dependencies] = dependencies;
+    ModuleMgr_Register(moduledata5);
     
     // Define all the module's data as layed out by enum ModuleData in project.inc.
     new moduledata[ModuleData];
@@ -61,13 +72,15 @@ public TestModule_OnPluginStart()
         
         strcopy(moduledata[ModuleData_Description], CM_DATA_DESCRIPTION, "Module designed to test the project base.");
         
+        moduledata[ModuleData_Dependencies][0] = INVALID_MODULE;
+        
         // Register the module with this data.
         g_iTestModules[x] = ModuleMgr_Register(moduledata);
         
         // Now register the events we're going to use.
         #if defined EVENT_MANAGER
-            EventMgr_RegisterEvent(g_iTestModules[x], Event_OnClientPutInServer, "TestModule_OnClientPutInServer");
-            EventMgr_RegisterEvent(g_iTestModules[x], Event_OnClientDisconnect, "TestModule_OnClientDisconnect");
+            //EventMgr_RegisterEvent(g_iTestModules[x], Event_OnClientPutInServer, "TestModule_OnClientPutInServer");
+            //EventMgr_RegisterEvent(g_iTestModules[x], Event_OnClientDisconnect, "TestModule_OnClientDisconnect");
             
             #if defined PROJECT_GAME_CSS
                 EventMgr_RegisterEvent(g_iTestModules[x], Event_RoundStart, "TestModule_OnRoundStart");

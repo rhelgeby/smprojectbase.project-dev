@@ -200,14 +200,28 @@ stock bool:ModuleMgr_IsModuleValid(Module:module)
 
 /**
  * Disables a registered module.
- * If the module is already disabled, nothing will change.
  * 
  * @param module    The module to disable.
+ * 
+ * @return          See enum ModuleToggleQuery.
  */
-stock ModuleMgr_Disable(Module:module)
+stock ModuleToggleQuery:ModuleMgr_Disable(Module:module)
 {
     if (ModuleMgr_IsDisabled(module))
-        return;
+        return ToggleQuery_Stopped;
+    
+    new bool:disableddependents = false;
+    new Module:dependents[CM_DATA_DEPENDENCIES];
+    new count = ModuleMgr_FindDependentModules(module, dependents);
+    for (new dindex = 0; dindex < count; dindex++)
+    {
+        // Disable dependent modules.
+        if (!ModuleMgr_IsDisabled(dependents[dindex]))
+        {
+            ModuleMgr_Disable(dependents[dindex]);
+            disableddependents = true;
+        }
+    }
     
     #if defined EVENT_MANAGER
         // Forward event to all modules.
@@ -225,18 +239,35 @@ stock ModuleMgr_Disable(Module:module)
     
     // Set the ModuleData_Disabled data to 'true'.
     ModuleMgr_WriteCell(module, ModuleData_Disabled, true);
+    
+    return disableddependents ? ToggleQuery_Dependent : ToggleQuery_Successful;
 }
 
 /**
  * Enables a registered module.
- * If the module is already enabled, nothing will change.
  * 
  * @param module    The module to enable.
+ * 
+ * @return          See enum ModuleToggleQuery.
  */
-stock ModuleMgr_Enable(Module:module)
+stock ModuleToggleQuery:ModuleMgr_Enable(Module:module)
 {
     if (!ModuleMgr_IsDisabled(module))
-        return;
+        return ToggleQuery_Stopped;
+    
+    new Module:dependencies[CM_DATA_DEPENDENCIES];
+    ModuleMgr_ReadArray(module, ModuleData_Dependencies, dependencies, sizeof(dependencies));
+    
+    // Validate that the module's dependencies are registered/enabled.
+    for (new dindex = 0; dindex < sizeof(dependencies); dindex++)
+    {
+        if (dependencies[dindex] == INVALID_MODULE)
+            break;
+        
+        // Check if this module is set to be enabled while its dependency is disabled.
+        if (ModuleMgr_IsDisabled(dependencies[dindex]))
+            return ToggleQuery_Dependent;
+    }
     
     // Set the ModuleData_Disabled data to 'false'.
     ModuleMgr_WriteCell(module, ModuleData_Disabled, false);
@@ -256,6 +287,8 @@ stock ModuleMgr_Enable(Module:module)
         if (result == Plugin_Handled)
             ModuleMgr_WriteCell(module, ModuleData_Disabled, true);
     #endif
+    
+    return ToggleQuery_Successful;
 }
 
 /**
@@ -385,6 +418,33 @@ stock ModuleMgr_ReadCell(Module:module, ModuleData:data)
 }
 
 /**
+ * Module data reader for any arrays.
+ * Modules can use this for communicating with other modules.
+ * 
+ * @param module    The module whose array to read.
+ * @param data      The data to get the value of.  See enum ModuleData.
+ * @param buffer    Output array for the data read.
+ * @param numValues The length of the array.
+ */
+stock ModuleMgr_ReadArray(Module:module, ModuleData:data, any:buffer[], numValues)
+{
+    new moduledata[ModuleData];
+    ModuleMgr_ReadAll(module, moduledata);
+    
+    // This is necessary because using 'data' directly in moduledata causes compiler errors
+    // because it can't know that 'data' is going to be an array.
+    switch(data)
+    {
+        case ModuleData_Dependencies:
+        {
+            // Copy array contents to buffer.
+            for (new index = 0; index < numValues; index++)
+                buffer[index] = moduledata[ModuleData_Dependencies][index];
+        }
+    }
+}
+
+/**
  * Module data reader for any string typed values.
  * Modules can use this for communicating with other modules. 
  * 
@@ -400,6 +460,40 @@ stock ModuleMgr_ReadString(Module:module, ModuleData:data, String:output[], maxl
     
     // Copy full name to output
     strcopy(output, maxlen, String:moduledata[data]);
+}
+
+/**
+ * Returns a list of modules that depend on the given module.
+ * 
+ * @param module        The module to find dependencies for.
+ * @param dependencies  A list of modules that depend on the given module.
+ * 
+ * @return              The number of modules that depend on the given module.
+ */
+stock ModuleMgr_FindDependentModules(Module:module, Module:dependencies[CM_DATA_DEPENDENCIES])
+{
+    new dindex = 0;
+    new Module:_dependencies[CM_DATA_DEPENDENCIES];
+    
+    // Loop through all the modules.
+    new count = MODULE_COUNT;
+    for (new moduleindex = 0; moduleindex < count; moduleindex++)
+    {
+        ModuleMgr_ReadArray(Module:moduleindex, ModuleData_Dependencies, _dependencies, sizeof(_dependencies));
+        for (new _dindex = 0; _dindex < sizeof(_dependencies); _dindex++)
+        {
+            if (_dependencies[_dindex] == INVALID_MODULE)
+                break;
+            
+            if (_dependencies[_dindex] == module)
+            {
+                dependencies[dindex++] = Module:moduleindex;
+                break;
+            }
+        }
+    }
+    
+    return dindex;
 }
 
 // **********************************************
@@ -440,6 +534,8 @@ stock bool:ModuleMgr_Unregister(Module:module)
  */
 stock bool:ModuleMgr_Validate(moduledata[ModuleData], &moduleflags = 0)
 {
+    moduleflags = 0;
+    
     // ModuleData_Disabled can't be invalid.
     // ModuleData_Hidden can't be invalid.
     
@@ -448,7 +544,6 @@ stock bool:ModuleMgr_Validate(moduledata[ModuleData], &moduleflags = 0)
     {
         moduleflags |= MODULE_DATA_FULLNAME;
         LogError("[Module Manager] [Registration Failed] Module needs a full name.");
-        return false;
     }
     
     // Validate ModuleData_ShortName.
@@ -456,7 +551,6 @@ stock bool:ModuleMgr_Validate(moduledata[ModuleData], &moduleflags = 0)
     {
         moduleflags |= MODULE_DATA_SHORTNAME;
         LogError("[Module Manager] [Registration Failed] Module \"%s\" needs a (unique) short name.", moduledata[ModuleData_FullName]);
-        return false;
     }
     else
     {
@@ -468,14 +562,32 @@ stock bool:ModuleMgr_Validate(moduledata[ModuleData], &moduleflags = 0)
             ModuleMgr_ReadString(clashmodule, ModuleData_FullName, clashmodulefullname, sizeof(clashmodulefullname));
             
             moduleflags |= MODULE_DATA_SHORTNAME;
-            LogError("[Module Manager] [Registration Failed] Module \"%s\" short name (%s) clashes with that of module \"%s\"", moduledata[ModuleData_FullName],moduledata[ModuleData_ShortName], clashmodulefullname);
-            return false;
+            LogError("[Module Manager] [Registration Failed] Module \"%s\" short name (%s) clashes with that of module \"%s\"", moduledata[ModuleData_FullName], moduledata[ModuleData_ShortName], clashmodulefullname);
         }
     }
     
     // ModuleData_Description can't be invalid.
     
-    return true;
+    decl String:dependencyfullname[32];
+    
+    // Validate that the module's dependencies are registered/enabled.
+    for (new dindex = 0; dindex < sizeof(moduledata[ModuleData_Dependencies]); dindex++)
+    {
+        if (moduledata[ModuleData_Dependencies][dindex] == INVALID_MODULE)
+            break;
+        
+        // Check if this module is set to be enabled while its dependency is disabled.
+        if (!moduledata[ModuleData_Disabled] && ModuleMgr_IsDisabled(moduledata[ModuleData_Dependencies][dindex]))
+        {
+            moduledata[ModuleData_Disabled] = true;
+            
+            ModuleMgr_ReadString(moduledata[ModuleData_Dependencies][dindex], ModuleData_FullName, dependencyfullname, sizeof(dependencyfullname));
+            LogMessage("[Module Manager] Warning: Module \"%s\" was disabled because its dependency (%s) is disabled.", moduledata[ModuleData_FullName], dependencyfullname);
+        }
+    }
+    
+    // Return false if the moduleflags is non-zero.
+    return (moduleflags == 0);
 }
 
 /**
@@ -562,6 +674,36 @@ stock ModuleMgr_WriteCell(Module:module, ModuleData:data, any:value)
     
     // Change the value of the specified module data.
     moduledata[data] = value;
+    
+    // Overwrite the old array with the modified one.
+    ModuleMgr_WriteAll(module, moduledata);
+}
+
+/**
+ * Module data writer that writes an array of data values.
+ * 
+ * @param module    The module whose array data to write.
+ * @param data      Data to write new array to.  See enum ModuleData.
+ * @param values    The array of values to write.
+ * @param numValues The size of the array.
+ */
+stock ModuleMgr_WriteArray(Module:module, ModuleData:data, any:values[], numValues)
+{
+    // Read all the module data.
+    new moduledata[ModuleData];
+    ModuleMgr_ReadAll(module, moduledata);
+    
+    // This is necessary because using 'data' directly in moduledata causes compiler errors
+    // because it can't know that 'data' is going to be an array.
+    switch(data)
+    {
+        case ModuleData_Dependencies:
+        {
+            // Copy array contents to buffer.
+            for (new index = 0; index < numValues; index++)
+                moduledata[ModuleData_Dependencies][index] = values[index];
+        }
+    }
     
     // Overwrite the old array with the modified one.
     ModuleMgr_WriteAll(module, moduledata);
@@ -972,15 +1114,23 @@ public BaseCmd_Enable(client, Handle:hParams, argc)
         return;
     }
     
-    ModuleMgr_Enable(module);
-    
-    // Verify that the module didn't refuse to load.
-    if (ModuleMgr_IsDisabled(module))
-        return;
+    new ModuleToggleQuery:result = ModuleMgr_Enable(module);
     
     decl String:modulefullname[CM_DATA_FULLNAME];
     ModuleMgr_ReadString(module, ModuleData_FullName, modulefullname, sizeof(modulefullname));
-    Project_PrintToServer("%T", "ModuleMgr modules enable", LANG_SERVER, modulefullname);
+    
+    switch (result)
+    {
+        case ToggleQuery_Successful:
+        {
+            if (ModuleMgr_IsDisabled(module))
+                Project_PrintToServer("%T", "ModuleMgr modules refuse", LANG_SERVER, modulefullname);
+            else
+                Project_PrintToServer("%T", "ModuleMgr modules enable", LANG_SERVER, modulefullname);
+        }
+        case ToggleQuery_Stopped:   Project_PrintToServer("%T", "ModuleMgr modules enable stopped", LANG_SERVER, modulefullname);
+        case ToggleQuery_Dependent: Project_PrintToServer("%T", "ModuleMgr modules enable dependent", LANG_SERVER, modulefullname);
+    }
 }
 
 /**
@@ -1010,11 +1160,17 @@ public BaseCmd_Disable(client, Handle:hParams, argc)
         return;
     }
     
-    ModuleMgr_Disable(module);
+    new ModuleToggleQuery:result = ModuleMgr_Disable(module);
     
     decl String:modulefullname[CM_DATA_FULLNAME];
     ModuleMgr_ReadString(module, ModuleData_FullName, modulefullname, sizeof(modulefullname));
-    Project_PrintToServer("%T", "ModuleMgr modules disable", LANG_SERVER, modulefullname);
+    
+    switch (result)
+    {
+        case ToggleQuery_Successful:    Project_PrintToServer("%T", "ModuleMgr modules disable", LANG_SERVER, modulefullname);
+        case ToggleQuery_Stopped:       Project_PrintToServer("%T", "ModuleMgr modules disable stopped", LANG_SERVER, modulefullname);
+        case ToggleQuery_Dependent:     Project_PrintToServer("%T", "ModuleMgr modules disable dependent", LANG_SERVER, modulefullname);
+    }
 }
 
 /**
