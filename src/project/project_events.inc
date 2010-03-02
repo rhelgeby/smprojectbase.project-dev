@@ -28,7 +28,7 @@
 /**
  * This is a collection of ALL game and custom events.
  * Add any custom events here to the bottom of the list, and update define EVENT_DATA_CELL_COUNT. (below)
- * Also don't forget to add the display name of your event to g_ProjectEventDisplay. (below)
+ * Also don't forget to add the display name of your event to g_ProjectEventNames. (below)
  */
 enum ProjectEvents
 {
@@ -92,7 +92,7 @@ enum ProjectEvents
  * String array of display names for project events. (above)
  * Keep this updated as ProjectEvents is modified.
  */
-stock String:g_ProjectEventDisplay[ProjectEvents][] = {
+stock String:g_ProjectEventNames[ProjectEvents][] = {
     // Cross-game events.
     "OnAllPluginsLoaded",
     "OnPluginEnd",

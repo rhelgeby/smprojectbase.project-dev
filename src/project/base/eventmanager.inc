@@ -143,9 +143,9 @@ stock EventMgr_OnPrintModuleInfo(client, Module:module)
         
         // Format each event onto a string.
         if (registeredevents[0] == 0)
-            strcopy(registeredevents, sizeof(registeredevents), g_ProjectEventDisplay[event]);
+            strcopy(registeredevents, sizeof(registeredevents), g_ProjectEventNames[event]);
         else
-            Format(registeredevents, sizeof(registeredevents), "%s, %s", registeredevents, g_ProjectEventDisplay[event]);
+            Format(registeredevents, sizeof(registeredevents), "%s, %s", registeredevents, g_ProjectEventNames[event]);
     }
     
     // If the module has no registered events, then format in the "_None" phrase.
@@ -336,7 +336,7 @@ stock Action:EventMgr_Forward(ProjectEvents:event, any:eventdata[][], numValues,
     
     #if defined PROFILE_EVENTS
         StopProfiling(profiler);
-        LogMessage("PROFILER: Event %s: Forwarded to %d modules, taking %f seconds to do.", g_ProjectEventDisplay[event], count, GetProfilerTime(profiler));
+        LogMessage("PROFILER: Event %s: Forwarded to %d modules, taking %f seconds to do.", g_ProjectEventNames[event], count, GetProfilerTime(profiler));
         CloseHandle(profiler);
     #endif
     
