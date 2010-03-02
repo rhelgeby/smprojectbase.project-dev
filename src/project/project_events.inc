@@ -173,11 +173,13 @@ enum EventDataTypes
  * Common data type info.
  */
 
-// When forwarding custom events with no data, use this.
+// When forwarding custom events with no data, use this for the 'eventdata' parameter in EventMgr_Forward
 stock any:g_CommonEventData1[][] = {{0}};
 
-// When forwarding custom events whose data thats being passed matches these, you can use these.
+// If you are using g_CommonEventData1, then the next parameter should be this.  This indicates you are passing no data.
 stock EventDataTypes:g_CommonDataType1[] = {};
+
+// This indicates that you are passing a single cell into an event.  Common for events that only pass a client index.
 stock EventDataTypes:g_CommonDataType2[] = {DataType_Cell};
 
 // **********************************************
