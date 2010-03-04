@@ -32,6 +32,7 @@
  */
 enum ProjectEvents
 {
+    // Cross-game events.
     Event_OnAllPluginsLoaded,       /** All plugins have loaded. */
     Event_OnPluginEnd,              /** Plugin is ending. */
     Event_OnAllModulesLoaded,       /** All modules have been registered. */
@@ -45,6 +46,9 @@ enum ProjectEvents
     Event_OnConfigsExecuted,        /** All convars are set, cvar-dependent code should use this. */
     Event_OnClientPutInServer,      /** Client has joined the server. */
     Event_OnClientDisconnect,       /** Client is disconnecting from the server. */
+    
+    // Custom events.
+    
     
     // CS:S events.
     #if defined PROJECT_GAME_CSS

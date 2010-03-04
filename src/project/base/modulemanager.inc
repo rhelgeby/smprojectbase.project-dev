@@ -855,7 +855,7 @@ stock BaseCmd_RegisterDefs()
     
     // Client commands.
     BaseCmd_Register(BASECMD_CLIENT, g_dirBlank, 0, "credits", "BaseCmd_Credits");
-    BaseCmd_Register(BASECMD_CLIENT, g_dirBlank, 0, "modules", "ModuleMgr_BaseCmdList");
+    BaseCmd_Register(BASECMD_CLIENT, g_dirBlank, 0, "modules", "BaseCmd_List");
     BaseCmd_Register(BASECMD_CLIENT, g_dirBlank, 0, "version", "BaseCmd_Version");
 }
 

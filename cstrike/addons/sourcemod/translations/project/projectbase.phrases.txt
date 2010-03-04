@@ -84,7 +84,7 @@
 	"ModuleMgr modules disable dependent"
 	{
 		"#format"	"{1:s}"
-		"en"		"Disabled module: \"{1}\".  (Other module(s) dependent on this one were also disabled)"
+		"en"		"Disabled module: \"{1}\"  (Other module(s) dependent on this one were also disabled)"
 	}
 
 	// {1}: the disabled module's fullname.
