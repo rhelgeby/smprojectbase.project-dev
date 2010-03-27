@@ -210,6 +210,14 @@ enum ModuleToggleQuery
 // **********************************************
 
 /**
+ * Exvel's chat color include is supported by the translations manager.
+ * Include the color.inc file below and TransMgr_PrintText* will support the color tags.
+ * 
+ * Link to colors on SM forums: http://forums.alliedmods.net/showthread.php?t=96831
+ */
+//#include <colors>
+
+/**
  * The directory where the project's translation files will be in.
  * All translations files in the format of *.phrases.txt will be automatically loaded.
  * Example path: addons/sourcemod/translations/TM_BASE_DIR/projectbase.phrases.txt.

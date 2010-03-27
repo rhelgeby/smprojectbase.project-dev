@@ -82,7 +82,6 @@ new Handle:g_hEventModuleCache[ProjectEvents];
 
 /**
  * Plugin is loading.
- * TODO: Support multiple games.
  */
 EventMgr_OnPluginStart()
 {

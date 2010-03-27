@@ -192,10 +192,25 @@ stock TransMgr_PrintText(client, MsgFormatting:msgformat, MsgTypes:msgtype, Modu
     {
         case MsgType_Server:    PrintToServer(translated);
         case MsgType_Console:   PrintToConsole(client, translated);
-        case MsgType_Chat:      PrintToChat(client, translated);
-        case MsgType_Reply:     ReplyToCommand(client, translated);
         case MsgType_Center:    PrintCenterText(client, translated);
         case MsgType_Hint:      PrintHintText(client, translated);
+        
+        #if defined _colors_included
+        case MsgType_Chat:      CPrintToChat(client, translated);
+        case MsgType_Reply:
+        {
+            if (GetCmdReplySource() == SM_REPLY_TO_CHAT)
+                CPrintToChat(client, translated);
+            else
+            {
+                CRemoveTags(translated, sizeof(translated));
+                ReplyToCommand(client, translated);
+            }
+        }
+        #else
+        case MsgType_Chat:      PrintToChat(client, translated);
+        case MsgType_Reply:     ReplyToCommand(client, translated);
+        #endif
     }
 }
 

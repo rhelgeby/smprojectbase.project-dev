@@ -783,7 +783,7 @@ stock Handle:ModuleMgr_GetList()
 #if defined PROJECT_BASE_CMD
 
 /**
- * Defines for the first element of the array above.
+ * Defines used to refer to the server sub-commands or client sub-commands.
  */
 #define BASECMD_SERVER 0
 #define BASECMD_CLIENT 1

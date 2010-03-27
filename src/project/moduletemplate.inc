@@ -59,6 +59,10 @@ new Module:g_module<ModuleVarName>;
     strcopy(moduledata[ModuleData_FullName], CM_DATA_FULLNAME, "");
     strcopy(moduledata[ModuleData_ShortName], CM_DATA_SHORTNAME, "");
     strcopy(moduledata[ModuleData_Description], CM_DATA_DESCRIPTION, "");
+    moduledata[ModuleData_Dependencies][0] = ;
+    moduledata[ModuleData_Dependencies][1] = ;
+    // End the last one with INVALID_MODULE.
+    moduledata[ModuleData_Dependencies][x] = INVALID_MODULE;
     
     // Send this array of data to the module manager.
     g_module<ModuleVarName> = ModuleMgr_Register(moduledata);
@@ -254,7 +258,6 @@ public <FuncPrefix>_PlayerTeam(client, team, oldteam, bool:disconnect)
  * Client has spawned.
  * 
  * @param client    The client index.
- * 
  */
 public <FuncPrefix>_PlayerSpawn(client)
 {
