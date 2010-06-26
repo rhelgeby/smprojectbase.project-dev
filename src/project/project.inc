@@ -97,6 +97,9 @@ enum Module
 #define MODULE_DATA_FULLNAME    (1 << 2)
 #define MODULE_DATA_SHORTNAME   (1 << 3)
 #define MODULE_DATA_DESCRIPTION (1 << 4)
+#define MODULE_DATA_EXTRA1      (1 << 5)
+#define MODULE_DATA_EXTRA2      (1 << 6)
+#define MODULE_DATA_EXTRA3      (1 << 7)
 
 /**
  * The max string/array lengths of module data variables.
@@ -116,7 +119,10 @@ enum ModuleData
     String:ModuleData_FullName[CM_DATA_FULLNAME],           /** Used for displaying modules. */
     String:ModuleData_ShortName[CM_DATA_SHORTNAME],         /** Used for client interaction with modules. */
     String:ModuleData_Description[CM_DATA_DESCRIPTION],     /** A description of the module */
-    Module:ModuleData_Dependencies[CM_DATA_DEPENDENCIES]    /** An array of module IDs that the module depends on.  {INVALID_MODULE} = no dependencies.  Must end with INVALID_MODULE. */
+    Module:ModuleData_Dependencies[CM_DATA_DEPENDENCIES],   /** An array of module IDs that the module depends on.  {INVALID_MODULE} = no dependencies.  Must end with INVALID_MODULE. */
+    any:ModuleData_Extra1,                                  /** An extra spot to store any value that other modules can read.  This can be renamed to whatever you want. */
+    any:ModuleData_Extra2,                                  /** An extra spot to store any value that other modules can read.  This can be renamed to whatever you want. */
+    any:ModuleData_Extra3                                   /** An extra spot to store any value that other modules can read.  This can be renamed to whatever you want. */
 }
 
 /**
