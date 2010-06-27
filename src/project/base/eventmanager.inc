@@ -345,7 +345,7 @@ stock Action:EventMgr_Forward(ProjectEvents:event, any:eventdata[][], numValues,
 /**
  * This function is only valid if being called within a forwarded event in a module!
  * This is needed when more than one module is using the same event. 
- * Returns the module the the current event is being forwarded to.
+ * Returns the module that the current event is being forwarded to.
  * 
  * @return  The module identifier.  
  */
@@ -399,17 +399,12 @@ stock EventMgr_ResetFuncData(Module:module)
     new Function:eventfuncdata[ProjectEvents];
     EventMgr_ReadAllFuncData(module, eventfuncdata);
     
-    new ProjectEvents:event;
-    
     // Loop through all events.
     // x = Index of the current event (see enum ProjectEvents)
     for (new eindex = 0; eindex < sizeof(eventfuncdata); eindex++)
     {
-        // Read the int as a ProjectEvent data type.
-        event = ProjectEvents:eindex;
-        
         // Reset the function ID to invalid.
-        eventfuncdata[event] = INVALID_FUNCTION;
+        eventfuncdata[ProjectEvents:eindex] = INVALID_FUNCTION;
     }
     
     // Overwrite the old array with the modified one.
