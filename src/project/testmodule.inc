@@ -25,7 +25,7 @@
  * ============================================================================
  */
 
-#define NUM_MODULES 50
+#define NUM_MODULES 1
 
 /**
  * A global variable to store the module identifiers in.
@@ -79,14 +79,14 @@ public TestModule_OnPluginStart()
         
         // Now register the events we're going to use.
         #if defined EVENT_MANAGER
-            //EventMgr_RegisterEvent(g_iTestModules[x], Event_OnClientPutInServer, "TestModule_OnClientPutInServer");
-            //EventMgr_RegisterEvent(g_iTestModules[x], Event_OnClientDisconnect, "TestModule_OnClientDisconnect");
+            EventMgr_RegisterEvent(g_iTestModules[x], "Event_OnClientPutInServer", "TestModule_OnClientPutInServer");
+            EventMgr_RegisterEvent(g_iTestModules[x], "Event_OnClientDisconnect", "TestModule_OnClientDisconnect");
             
             #if defined PROJECT_GAME_CSS
-                EventMgr_RegisterEvent(g_iTestModules[x], Event_RoundStart, "TestModule_OnRoundStart");
-                //EventMgr_RegisterEvent(g_iTestModules[x], Event_OnMapStart, "TestModule_OnMapStart");
-                EventMgr_RegisterEvent(g_iTestModules[x], Event_PlayerSpawn, "TestModule_OnPlayerSpawn");
-                EventMgr_RegisterEvent(g_iTestModules[x], Event_PlayerHurt, "TestModule_OnPlayerHurt");
+                EventMgr_RegisterEvent(g_iTestModules[x], "Event_RoundStart", "TestModule_OnRoundStart");
+                //EventMgr_RegisterEvent(g_iTestModules[x], "Event_OnMapStart", "TestModule_OnMapStart");
+                EventMgr_RegisterEvent(g_iTestModules[x], "Event_PlayerSpawn", "TestModule_OnPlayerSpawn");
+                EventMgr_RegisterEvent(g_iTestModules[x], "Event_PlayerHurt", "TestModule_OnPlayerHurt");
             #endif
             
         #endif
@@ -210,7 +210,7 @@ public TestModule_OnRoundStart(dcell, Float:dfloat, any:darray[], String:dstring
     
     #if defined EVENT_MANAGER
         // Switching event forward.
-        EventMgr_SetEventForward(curmodule, Event_RoundStart, "TestModule_OnRoundStart2");
+        EventMgr_SetEventForward(curmodule, g_EvRoundStart, "TestModule_OnRoundStart2");
     #endif
 }
 
@@ -227,14 +227,14 @@ public TestModule_OnRoundStart2(dcell, Float:dfloat, any:darray[], String:dstrin
     
     #if defined EVENT_MANAGER
         // Toggle player_hurt event
-        if (EventMgr_IsEventActive(curmodule, Event_PlayerHurt))
+        if (EventMgr_IsEventActive(curmodule, g_EvPlayerHurt))
         {
-            EventMgr_Disable(curmodule, Event_PlayerHurt);
+            EventMgr_Disable(curmodule, g_EvPlayerHurt);
             PrintToServer("Disabled event player_hurt");
         }
         else
         {
-            EventMgr_Enable(curmodule, Event_PlayerHurt);
+            EventMgr_Enable(curmodule, g_EvPlayerHurt);
             PrintToServer("Enabled event player_hurt");
         }
     #endif

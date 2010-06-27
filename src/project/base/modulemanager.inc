@@ -96,8 +96,8 @@ ModuleMgr_OnPluginStart()
     // Now check each of the other base project files if they need more cells, and set the max to that if true.
     
     #if defined EVENT_MANAGER
-        if (sizeof(g_DummyEventData) > g_iMMMaxBlockSize)
-            g_iMMMaxBlockSize = sizeof(g_DummyEventData);
+        if (EM_DATA_CELL_COUNT > g_iMMMaxBlockSize)
+            g_iMMMaxBlockSize = EM_DATA_CELL_COUNT;
     #endif
     
     #if defined CONFIG_MANAGER
@@ -228,13 +228,13 @@ stock ModuleToggleQuery:ModuleMgr_Disable(Module:module)
         new any:eventdata[1][1];
         eventdata[0][0] = module;
         
-        EventMgr_Forward(Event_OnModuleDisable, eventdata, sizeof(eventdata), sizeof(eventdata[]), g_CommonDataType2);
+        EventMgr_Forward(g_EvOnModuleDisable, eventdata, sizeof(eventdata), sizeof(eventdata[]), g_CommonDataType2);
         
         // Send this event only to the module being disabled.
         new Module:modules[2] = {INVALID_MODULE, ...};
         modules[0] = module;
         
-        EventMgr_Forward(Event_OnMyModuleDisable, g_CommonEventData1, 0, 0, g_CommonDataType1, modules);
+        EventMgr_Forward(g_EvOnMyModuleDisable, g_CommonEventData1, 0, 0, g_CommonDataType1, modules);
     #endif
     
     // Set the ModuleData_Disabled data to 'true'.
@@ -277,13 +277,13 @@ stock ModuleToggleQuery:ModuleMgr_Enable(Module:module)
         new any:eventdata[1][1];
         eventdata[0][0] = module;
         
-        EventMgr_Forward(Event_OnModuleEnable, eventdata, sizeof(eventdata), sizeof(eventdata[]), g_CommonDataType2);
+        EventMgr_Forward(g_EvOnModuleEnable, eventdata, sizeof(eventdata), sizeof(eventdata[]), g_CommonDataType2);
         
         // Send this event only to the module being enabled.
         new Module:modules[2] = {INVALID_MODULE, ...};
         modules[0] = module;
         
-        new Action:result = EventMgr_Forward(Event_OnMyModuleEnable, g_CommonEventData1, 0, 0, g_CommonDataType1, modules);
+        new Action:result = EventMgr_Forward(g_EvOnMyModuleEnable, g_CommonEventData1, 0, 0, g_CommonDataType1, modules);
         if (result == Plugin_Handled)
             ModuleMgr_WriteCell(module, ModuleData_Disabled, true);
     #endif
