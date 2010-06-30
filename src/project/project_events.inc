@@ -206,7 +206,7 @@ stock EventMgr_CreateEvents()
     // CS:S events.
     #if defined PROJECT_GAME_CSS
         g_EvRoundStart =            EventMgr_CreateEvent("Event_RoundStart");               /** Round has started. */
-        g_EvRoundFreezeEnd =        EventMgr_CreateEvent("Event_RoundFreezeEnd");           /** Pre-round has freezetime has finished. */
+        g_EvRoundFreezeEnd =        EventMgr_CreateEvent("Event_RoundFreezeEnd");           /** Pre-round freezetime has finished. */
         g_EvRoundEnd =              EventMgr_CreateEvent("Event_RoundEnd");                 /** Round has ended. */
         g_EvPlayerTeam =            EventMgr_CreateEvent("Event_PlayerTeam");               /** Client has joined a team. */
         g_EvPlayerSpawn =           EventMgr_CreateEvent("Event_PlayerSpawn");              /** Client has spawned. */
@@ -311,7 +311,7 @@ public GameEvent_RoundStart(Handle:event, const String:name[], bool:dontBroadcas
 }
 
 /**
- * Pre-round has freezetime has finished.
+ * Pre-round freezetime has finished.
  *
  * @param event			Handle to event. This could be INVALID_HANDLE if every plugin hooking 
  *						this event has set the hook mode EventHookMode_PostNoCopy.

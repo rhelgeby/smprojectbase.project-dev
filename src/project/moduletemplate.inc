@@ -229,7 +229,7 @@ public <FuncPrefix>_RoundStart()
 }
 
 /**
- * Pre-round has freezetime has finished.
+ * Pre-round freezetime has finished.
  */
 public <FuncPrefix>_RoundFreezeEnd()
 {
