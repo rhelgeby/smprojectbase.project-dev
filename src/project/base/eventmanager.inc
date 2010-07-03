@@ -376,7 +376,7 @@ stock Action:EventMgr_Forward(ProjectEvent:eventid, any:eventdata[][], numValues
     
     #if defined PROFILE_EVENTS
         StopProfiling(profiler);
-        LogMessage("PROFILER: Event %s: Forwarded to %d modules, taking %f seconds to do.", g_ProjectEventNames[eventid], count, GetProfilerTime(profiler));
+        LogMessage("PROFILER: Event %s: Forwarded to %d modules, taking %f seconds to do.", g_EMEvents[_:eventid], count, GetProfilerTime(profiler));
         CloseHandle(profiler);
     #endif
     
