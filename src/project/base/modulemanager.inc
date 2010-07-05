@@ -210,19 +210,6 @@ stock ModuleToggleQuery:ModuleMgr_Disable(Module:module)
     if (ModuleMgr_IsDisabled(module))
         return ToggleQuery_Stopped;
     
-    new bool:disableddependents = false;
-    new Module:dependents[CM_DATA_DEPENDENCIES];
-    new count = ModuleMgr_FindDependentModules(module, dependents);
-    for (new dindex = 0; dindex < count; dindex++)
-    {
-        // Disable dependent modules.
-        if (!ModuleMgr_IsDisabled(dependents[dindex]))
-        {
-            ModuleMgr_Disable(dependents[dindex]);
-            disableddependents = true;
-        }
-    }
-    
     #if defined EVENT_MANAGER
         // Forward event to all modules.
         new any:eventdata[1][1];
@@ -242,6 +229,19 @@ stock ModuleToggleQuery:ModuleMgr_Disable(Module:module)
     
     // Set the ModuleData_Disabled data to 'true'.
     ModuleMgr_WriteCell(module, ModuleData_Disabled, true);
+    
+    new bool:disableddependents = false;
+    new Module:dependents[CM_DATA_DEPENDENCIES];
+    new count = ModuleMgr_FindDependentModules(module, dependents);
+    for (new dindex = 0; dindex < count; dindex++)
+    {
+        // Disable dependent modules.
+        if (!ModuleMgr_IsDisabled(dependents[dindex]))
+        {
+            ModuleMgr_Disable(dependents[dindex]);
+            disableddependents = true;
+        }
+    }
     
     return disableddependents ? ToggleQuery_Dependent : ToggleQuery_Successful;
 }
