@@ -22,8 +22,8 @@ Project
 			..\src\project\base\versioninfo.inc
 			..\src\project\base\wrappers.inc
 		-Module Includes
-			..\src\project\moduletemplate.inc
-			..\src\project\testmodule.inc
+			..\src\project\modules\moduletemplate.inc
+			..\src\project\modules\testmodule.inc
 		..\src\project.sp
 		..\src\project\project.inc
 		..\src\project\project_events.inc

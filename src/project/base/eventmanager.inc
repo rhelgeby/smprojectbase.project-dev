@@ -318,7 +318,7 @@ stock Action:EventMgr_Forward(ProjectEvent:eventid, any:eventdata[][], numValues
     new count = GetArraySize(g_hEventModuleCache[eventid]);
     for (new moduleindex = 0; moduleindex < count; moduleindex++)
     {
-        // Read moduleindex as a Module type.
+        // Get the module identifier from the module cache for this event.
         module = Module:GetArrayCell(g_hEventModuleCache[eventid], moduleindex);
         
         // If the module is disabled, then stop this iteration.
