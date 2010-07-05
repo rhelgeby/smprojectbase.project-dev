@@ -138,6 +138,15 @@ public <FuncPrefix>_OnModuleEnable(Module:module)
 }
 
 /**
+ * A module has been enabled.
+ * 
+ * @return      Return Plugin_Handled to stop enable, and Plugin_Continue to allow it.
+ */
+public Action:<FuncPrefix>_OnModuleEnable(Module:module)
+{
+}
+
+/**
  * The module that hooked this event callback has been enabled.
  */
 public <FuncPrefix>_OnMyModuleEnable()
@@ -147,7 +156,7 @@ public <FuncPrefix>_OnMyModuleEnable()
 /**
  * The module that hooked this event callback has been enabled.
  * 
- * @return      Return Plugin_Handled to stop load, and Plugin_Continue to allow it.
+ * @return      Return Plugin_Handled to stop enable, and Plugin_Continue to allow it.
  */
 public Action:<FuncPrefix>_OnMyModuleEnable()
 {
@@ -161,9 +170,27 @@ public <FuncPrefix>_OnModuleDisable(Module:module)
 }
 
 /**
+ * A module has been disabled.
+ * 
+ * @return      Return Plugin_Handled to stop disable, and Plugin_Continue to allow it.
+ */
+public Action:<FuncPrefix>_OnModuleDisable(Module:module)
+{
+}
+
+/**
  * The module that hooked this event callback has been disabled.
  */
 public <FuncPrefix>_OnMyModuleDisable()
+{
+}
+
+/**
+ * The module that hooked this event callback has been disabled.
+ * 
+ * @return      Return Plugin_Handled to stop disable, and Plugin_Continue to allow it.
+ */
+public Action:<FuncPrefix>_OnMyModuleDisable()
 {
 }
 

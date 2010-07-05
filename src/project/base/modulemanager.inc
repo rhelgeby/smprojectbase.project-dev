@@ -223,22 +223,26 @@ stock ModuleToggleQuery:ModuleMgr_Disable(Module:module)
         }
     }
     
+    // Set the ModuleData_Disabled data to 'true'.
+    ModuleMgr_WriteCell(module, ModuleData_Disabled, true);
+    
     #if defined EVENT_MANAGER
         // Forward event to all modules.
         new any:eventdata[1][1];
         eventdata[0][0] = module;
         
-        EventMgr_Forward(g_EvOnModuleDisable, eventdata, sizeof(eventdata), sizeof(eventdata[]), g_CommonDataType2);
+        new Action:result = EventMgr_Forward(g_EvOnModuleDisable, eventdata, sizeof(eventdata), sizeof(eventdata[]), g_CommonDataType2);
+        if (result == Plugin_Handled)
+            ModuleMgr_WriteCell(module, ModuleData_Disabled, false);
         
         // Send this event only to the module being disabled.
         new Module:modules[2] = {INVALID_MODULE, ...};
         modules[0] = module;
         
-        EventMgr_Forward(g_EvOnMyModuleDisable, g_CommonEventData1, 0, 0, g_CommonDataType1, modules);
+        result = EventMgr_Forward(g_EvOnMyModuleDisable, g_CommonEventData1, 0, 0, g_CommonDataType1, modules);
+        if (result == Plugin_Handled)
+            ModuleMgr_WriteCell(module, ModuleData_Disabled, false);
     #endif
-    
-    // Set the ModuleData_Disabled data to 'true'.
-    ModuleMgr_WriteCell(module, ModuleData_Disabled, true);
     
     return disableddependents ? ToggleQuery_Dependent : ToggleQuery_Successful;
 }
@@ -277,13 +281,15 @@ stock ModuleToggleQuery:ModuleMgr_Enable(Module:module)
         new any:eventdata[1][1];
         eventdata[0][0] = module;
         
-        EventMgr_Forward(g_EvOnModuleEnable, eventdata, sizeof(eventdata), sizeof(eventdata[]), g_CommonDataType2);
+        new Action:result = EventMgr_Forward(g_EvOnModuleEnable, eventdata, sizeof(eventdata), sizeof(eventdata[]), g_CommonDataType2);
+        if (result == Plugin_Handled)
+            ModuleMgr_WriteCell(module, ModuleData_Disabled, true);
         
         // Send this event only to the module being enabled.
         new Module:modules[2] = {INVALID_MODULE, ...};
         modules[0] = module;
         
-        new Action:result = EventMgr_Forward(g_EvOnMyModuleEnable, g_CommonEventData1, 0, 0, g_CommonDataType1, modules);
+        result = EventMgr_Forward(g_EvOnMyModuleEnable, g_CommonEventData1, 0, 0, g_CommonDataType1, modules);
         if (result == Plugin_Handled)
             ModuleMgr_WriteCell(module, ModuleData_Disabled, true);
     #endif

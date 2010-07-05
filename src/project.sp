@@ -46,7 +46,7 @@
 #include "project/base/modulemanager"
 
 // Module includes.
-#include "project/testmodule"
+#include "project/modules/testmodule"
 
 /**
  * Record plugin info.
