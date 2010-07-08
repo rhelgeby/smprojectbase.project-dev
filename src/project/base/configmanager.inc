@@ -131,10 +131,11 @@ ConfigMgr_OnPluginEnd()
  */
 stock ConfigMgr_OnModuleRegister(Handle:adtModule)
 {
-    // Push the config path strings for a module.
+    // Push the config data arrays for a module.
     // This is being pushed into our allocated space for config path data.
+    new ConfigData:moduleconfigs[CM_MODULE_MAX_CONFIGS];
     for (new pindex = 0; pindex < CM_MODULE_MAX_CONFIGS; pindex++)
-        PushArrayString(adtModule, "");
+        PushArrayArray(adtModule, moduleconfigs[0], sizeof(moduleconfigs));
 }
 
 /**
