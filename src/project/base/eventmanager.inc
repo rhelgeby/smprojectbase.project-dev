@@ -111,6 +111,19 @@ EventMgr_OnPluginStart()
  */
 EventMgr_OnPluginEnd()
 {
+    // Loop through all the modules, and disable them.
+    new Module:module;
+    new count = MODULE_COUNT;
+    for (new moduleindex = 0; moduleindex < count; moduleindex++)
+    {
+        // Read moduleindex as a Module type.
+        module = Module:moduleindex;
+        
+        // Disable before unregistering.
+        if (!ModuleMgr_IsDisabled(module))
+            ModuleMgr_Disable(module);
+    }
+    
     // Cleanup the event module cache.
     for (new eindex = 0; eindex < sizeof(g_hEventModuleCache); eindex++)
         CloseHandle(g_hEventModuleCache[eindex]);

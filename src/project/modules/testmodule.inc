@@ -79,8 +79,8 @@ public TestModule_OnPluginStart()
         
         // Now register the events we're going to use.
         #if defined EVENT_MANAGER
-            //EventMgr_RegisterEvent(g_iTestModules[x], "Event_OnMyModuleEnable", "TestModule_OnMyModuleEnable");
-            //EventMgr_RegisterEvent(g_iTestModules[x], "Event_OnMyModuleDisable", "TestModule_OnMyModuleDisable");
+            EventMgr_RegisterEvent(g_iTestModules[x], "Event_OnMyModuleEnable", "TestModule_OnMyModuleEnable");
+            EventMgr_RegisterEvent(g_iTestModules[x], "Event_OnMyModuleDisable", "TestModule_OnMyModuleDisable");
             EventMgr_RegisterEvent(g_iTestModules[x], "Event_OnClientPutInServer", "TestModule_OnClientPutInServer");
             EventMgr_RegisterEvent(g_iTestModules[x], "Event_OnClientDisconnect", "TestModule_OnClientDisconnect");
             
@@ -158,9 +158,9 @@ public Action:TestModule_OnMyModuleEnable()
     return Plugin_Handled;
 }
 
-public Action:TestModule_OnMyModuleDisable()
+public TestModule_OnMyModuleDisable()
 {
-    return Plugin_Handled;
+    PrintToServer("Module disabled.");
 }
 
 public TestModule_OnClientPutInServer(client)
