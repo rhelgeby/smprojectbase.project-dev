@@ -124,6 +124,20 @@ public <FuncPrefix>_OnPluginEnd()
 }
 
 /**
+ * Register all events here.
+ */
+public <FuncPrefix>_OnEventsRegister()
+{
+}
+
+/**
+ * All modules and events have been registered by this point.  Event priority can be changed here.
+ */
+public <FuncPrefix>_OnEventsReady()
+{
+}
+
+/**
  * All modules have been registered.
  */
 public <FuncPrefix>_OnAllModulesLoaded()

@@ -79,18 +79,7 @@ public TestModule_OnPluginStart()
         
         // Now register the events we're going to use.
         #if defined EVENT_MANAGER
-            EventMgr_RegisterEvent(g_iTestModules[x], "Event_OnMyModuleEnable", "TestModule_OnMyModuleEnable");
-            EventMgr_RegisterEvent(g_iTestModules[x], "Event_OnMyModuleDisable", "TestModule_OnMyModuleDisable");
-            EventMgr_RegisterEvent(g_iTestModules[x], "Event_OnClientPutInServer", "TestModule_OnClientPutInServer");
-            EventMgr_RegisterEvent(g_iTestModules[x], "Event_OnClientDisconnect", "TestModule_OnClientDisconnect");
-            
-            #if defined PROJECT_GAME_CSS
-                EventMgr_RegisterEvent(g_iTestModules[x], "Event_RoundStart", "TestModule_OnRoundStart");
-                //EventMgr_RegisterEvent(g_iTestModules[x], "Event_OnMapStart", "TestModule_OnMapStart");
-                EventMgr_RegisterEvent(g_iTestModules[x], "Event_PlayerSpawn", "TestModule_OnPlayerSpawn");
-                EventMgr_RegisterEvent(g_iTestModules[x], "Event_PlayerHurt", "TestModule_OnPlayerHurt");
-            #endif
-            
+            EventMgr_RegisterEvent(g_iTestModules[x], "Event_OnEventsRegister", "TestModule_OnEventsRegister");
         #endif
         
         #if defined CONFIG_MANAGER
@@ -101,6 +90,41 @@ public TestModule_OnPluginStart()
     // ************************
     // Done registering module.
     // ************************
+}
+
+/**
+ * Register all events here.
+ */
+public TestModule_OnEventsRegister()
+{
+    // Now register the events we're going to use.
+    #if defined EVENT_MANAGER
+    
+    for (new x = 0; x < NUM_MODULES; x++)
+    {
+        EventMgr_RegisterEvent(g_iTestModules[x], "Event_OnEventsReady", "TestModule_OnEventsReady");
+        EventMgr_RegisterEvent(g_iTestModules[x], "Event_OnMyModuleEnable", "TestModule_OnMyModuleEnable");
+        EventMgr_RegisterEvent(g_iTestModules[x], "Event_OnMyModuleDisable", "TestModule_OnMyModuleDisable");
+        EventMgr_RegisterEvent(g_iTestModules[x], "Event_OnClientPutInServer", "TestModule_OnClientPutInServer");
+        EventMgr_RegisterEvent(g_iTestModules[x], "Event_OnClientDisconnect", "TestModule_OnClientDisconnect");
+        
+        #if defined PROJECT_GAME_CSS
+            EventMgr_RegisterEvent(g_iTestModules[x], "Event_RoundStart", "TestModule_OnRoundStart");
+            //EventMgr_RegisterEvent(g_iTestModules[x], "Event_OnMapStart", "TestModule_OnMapStart");
+            EventMgr_RegisterEvent(g_iTestModules[x], "Event_PlayerSpawn", "TestModule_OnPlayerSpawn");
+            EventMgr_RegisterEvent(g_iTestModules[x], "Event_PlayerHurt", "TestModule_OnPlayerHurt");
+        #endif
+    }
+    
+    #endif
+}
+
+/**
+ * All modules and events have been registered by this point.  Event priority can be changed here.
+ */
+public TestModule_OnEventsReady()
+{
+    PrintToServer("Events Ready.");
 }
 
 enum TestModuleConfigs
