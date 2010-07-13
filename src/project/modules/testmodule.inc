@@ -25,7 +25,7 @@
  * ============================================================================
  */
 
-#define NUM_MODULES 1
+#define NUM_MODULES 10
 
 /**
  * A global variable to store the module identifiers in.
@@ -100,22 +100,19 @@ public TestModule_OnEventsRegister()
     // Now register the events we're going to use.
     #if defined EVENT_MANAGER
     
-    for (new x = 0; x < NUM_MODULES; x++)
-    {
-        EventMgr_RegisterEvent(g_iTestModules[x], "Event_OnEventsReady", "TestModule_OnEventsReady");
-        EventMgr_RegisterEvent(g_iTestModules[x], "Event_OnMyModuleEnable", "TestModule_OnMyModuleEnable");
-        EventMgr_RegisterEvent(g_iTestModules[x], "Event_OnMyModuleDisable", "TestModule_OnMyModuleDisable");
-        EventMgr_RegisterEvent(g_iTestModules[x], "Event_OnClientPutInServer", "TestModule_OnClientPutInServer");
-        EventMgr_RegisterEvent(g_iTestModules[x], "Event_OnClientDisconnect", "TestModule_OnClientDisconnect");
+        new module = _:EventMgr_GetEventOwner() - 2;
+        EventMgr_RegisterEvent(g_iTestModules[module], "Event_OnEventsReady", "TestModule_OnEventsReady");
+        EventMgr_RegisterEvent(g_iTestModules[module], "Event_OnMyModuleEnable", "TestModule_OnMyModuleEnable");
+        EventMgr_RegisterEvent(g_iTestModules[module], "Event_OnMyModuleDisable", "TestModule_OnMyModuleDisable");
+        EventMgr_RegisterEvent(g_iTestModules[module], "Event_OnClientPutInServer", "TestModule_OnClientPutInServer");
+        EventMgr_RegisterEvent(g_iTestModules[module], "Event_OnClientDisconnect", "TestModule_OnClientDisconnect");
         
         #if defined PROJECT_GAME_CSS
-            EventMgr_RegisterEvent(g_iTestModules[x], "Event_RoundStart", "TestModule_OnRoundStart");
+            EventMgr_RegisterEvent(g_iTestModules[module], "Event_RoundStart", "TestModule_OnRoundStart");
             //EventMgr_RegisterEvent(g_iTestModules[x], "Event_OnMapStart", "TestModule_OnMapStart");
-            EventMgr_RegisterEvent(g_iTestModules[x], "Event_PlayerSpawn", "TestModule_OnPlayerSpawn");
-            EventMgr_RegisterEvent(g_iTestModules[x], "Event_PlayerHurt", "TestModule_OnPlayerHurt");
+            EventMgr_RegisterEvent(g_iTestModules[module], "Event_PlayerSpawn", "TestModule_OnPlayerSpawn");
+            EventMgr_RegisterEvent(g_iTestModules[module], "Event_PlayerHurt", "TestModule_OnPlayerHurt");
         #endif
-    }
-    
     #endif
 }
 
@@ -124,6 +121,18 @@ public TestModule_OnEventsRegister()
  */
 public TestModule_OnEventsReady()
 {
+    // Test priority setting.
+    /**
+    if (EventMgr_GetEventOwner() == g_iTestModules[NUM_MODULES - 1])
+    {
+        EventMgr_PrintPriority(g_EvOnMyModuleEnable);
+        EventMgr_GivePriority(g_EvOnMyModuleEnable, g_iTestModules[8], g_iTestModules[0]);
+        EventMgr_PrintPriority(g_EvOnMyModuleEnable);
+        EventMgr_TakePriority(g_EvOnMyModuleEnable, g_iTestModules[8], g_iTestModules[9]);
+        EventMgr_PrintPriority(g_EvOnMyModuleEnable);
+    }
+    */
+    
     PrintToServer("Events Ready.");
 }
 
