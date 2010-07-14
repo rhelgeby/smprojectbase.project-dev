@@ -258,6 +258,11 @@ stock TransMgr_PrintTextAll(bool:server, bool:admin, MsgFormatting:msgformat, Ms
         else
             VFormat(translated, sizeof(translated), "%t", 7);
         
+        // Remove color tags before printing in server console.
+        #if defined _colors_included
+            CRemoveTags(translated, sizeof(translated));
+        #endif
+        
         TransMgr_PrintText(SERVER_INDEX, msgformat, MsgType_Server, module, true, translated);
     }
     
