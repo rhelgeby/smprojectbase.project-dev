@@ -242,10 +242,15 @@ stock ProjectEvent:EventMgr_RegisterEvent(Module:module, const String:eventname[
  * @param module1   The module that should have priority over the other.
  * @param module2   The module that will be second in priority to module1.
  * 
- * @return          True if module1 was given priority over module2, false if module1 already has priority or event isn't registered for one of the modules.
+ * @return          True if module1 ends up with priority over module2, false if invalid information is given.
  */
-stock bool:EventMgr_GivePriority(ProjectEvent:eventid, Module:module1, Module:module2)
+stock bool:EventMgr_GivePriority(const String:eventname[], Module:module1, Module:module2)
 {
+    // Get the event ID given its name.
+    new ProjectEvent:eventid = EventMgr_EventNameToID(eventname);
+    if (eventid == INVALID_EVENT)
+        return false;
+    
     // Find the indexes of the modules in the event cache.
     new mpriority1 = EventMgr_GetModuleCacheIndex(module1, eventid);
     new mpriority2 = EventMgr_GetModuleCacheIndex(module2, eventid);
@@ -254,7 +259,7 @@ stock bool:EventMgr_GivePriority(ProjectEvent:eventid, Module:module1, Module:mo
     
     // Check if module1 has higher priority than module2.
     if (mpriority1 < mpriority2)
-        return false;
+        return true;
     
     // Move module1 right above module2.
     new Handle:adtModule = GetArrayCell(g_hEventModuleCache[_:eventid], mpriority1);    //  Copy the handle of the module we're moving
@@ -273,10 +278,15 @@ stock bool:EventMgr_GivePriority(ProjectEvent:eventid, Module:module1, Module:mo
  * @param module1   The module that should not have priority over the other.
  * @param module2   The module that module1 will be under in priority.
  * 
- * @return          True if priority was taken from module1 and given to module2, false if module1 already doesn't have priority over module2 or event isn't registered for one of the modules.
+ * @return          True if module1 ends up with lower priority than module2, false if invalid information is given.
  */
-stock bool:EventMgr_TakePriority(ProjectEvent:eventid, Module:module1, Module:module2)
+stock bool:EventMgr_TakePriority(const String:eventname[], Module:module1, Module:module2)
 {
+    // Get the event ID given its name.
+    new ProjectEvent:eventid = EventMgr_EventNameToID(eventname);
+    if (eventid == INVALID_EVENT)
+        return false;
+    
     // Find the indexes of the modules in the event cache.
     new mpriority1 = EventMgr_GetModuleCacheIndex(module1, eventid);
     new mpriority2 = EventMgr_GetModuleCacheIndex(module2, eventid);
@@ -285,7 +295,7 @@ stock bool:EventMgr_TakePriority(ProjectEvent:eventid, Module:module1, Module:mo
     
     // Check if module2 has higher priority than module1.
     if (mpriority1 > mpriority2)
-        return false;
+        return true;
     
     // Move module1 right above module2.
     new Handle:adtModule = GetArrayCell(g_hEventModuleCache[_:eventid], mpriority1);    //  Copy the handle of the module we're moving
