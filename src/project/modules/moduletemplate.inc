@@ -67,7 +67,20 @@ new Module:g_module<ModuleVarName>;
     // Send this array of data to the module manager.
     g_module<ModuleVarName> = ModuleMgr_Register(moduledata);
     
+    // Register the OnEventsRegister event to register all events in it.
+    //EventMgr_RegisterEvent(g_module<ModuleVarName>, Event_OnEventsRegister,       "<FuncPrefix>_OnEventsRegister");
+    
+    // Register config file(s) that this module will use.
+    // ConfigMgr_Register(g_module<ModuleVarName>, "<FuncPrefix>_OnConfigReload", "configs/<projectshortname>/<config>.txt");
+}
+
+/**
+ * Register all events here.
+ */
+public <FuncPrefix>_OnEventsRegister()
+{
     // Register all the events needed for this module.
+    //EventMgr_RegisterEvent(g_module<ModuleVarName>, Event_OnEventsReady,          "<FuncPrefix>_OnEventsReady");
     //EventMgr_RegisterEvent(g_module<ModuleVarName>, Event_OnAllPluginsLoaded,      "<FuncPrefix>_OnAllPluginsLoaded");
     //EventMgr_RegisterEvent(g_module<ModuleVarName>, Event_OnPluginEnd,             "<FuncPrefix>_OnPluginEnd");
     //EventMgr_RegisterEvent(g_module<ModuleVarName>, Event_OnAllModulesLoaded,      "<FuncPrefix>_OnAllModulesLoaded");
@@ -95,9 +108,13 @@ new Module:g_module<ModuleVarName>;
     //EventMgr_RegisterEvent(g_module<ModuleVarName>, Event_WeaponFire,              "<FuncPrefix>_WeaponFire");
     
     #endif
-    
-    // Register config file(s) that this module will use.
-    // ConfigMgr_Register(g_module<ModuleVarName>, "<FuncPrefix>_OnConfigReload", "configs/<projectshortname>/<config>.txt");
+}
+
+/**
+ * All modules and events have been registered by this point.  Event priority can be changed here.
+ */
+public <FuncPrefix>_OnEventsReady()
+{
 }
 
 /**
@@ -120,27 +137,6 @@ public <FuncPrefix>_OnAllPluginsLoaded()
  * Plugin is ending.
  */
 public <FuncPrefix>_OnPluginEnd()
-{
-}
-
-/**
- * Register all events here.
- */
-public <FuncPrefix>_OnEventsRegister()
-{
-}
-
-/**
- * All modules and events have been registered by this point.  Event priority can be changed here.
- */
-public <FuncPrefix>_OnEventsReady()
-{
-}
-
-/**
- * All modules have been registered.
- */
-public <FuncPrefix>_OnAllModulesLoaded()
 {
 }
 

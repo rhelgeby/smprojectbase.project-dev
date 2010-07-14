@@ -46,6 +46,11 @@
  */
 //#define PROFILE_EVENTS
 
+/**
+ * Uncomment this to debug crashes happening somewhere inside an event.
+ */
+//#define DEBUG_EVENTS
+
 // ---------------
 //     Private
 // ---------------
@@ -466,8 +471,18 @@ stock Action:EventMgr_Forward(ProjectEvent:eventid, any:eventdata[][], numValues
             }
         }
         
+        #if defined DEBUG_EVENTS
+            decl String:modulefullname[CM_DATA_FULLNAME];
+            ModuleMgr_ReadString(module, ModuleData_FullName, modulefullname, sizeof(modulefullname));
+            LogMessage("EVENT DEBUGGER: Event %s: Module: %s BEFORE CALLING", g_EMEvents[_:eventid], modulefullname);
+        #endif
+        
         // Call the function.
         Call_Finish(result);
+        
+        #if defined DEBUG_EVENTS
+            LogMessage("EVENT DEBUGGER: Event %s: Module: %s AFTER CALLING", g_EMEvents[_:eventid], modulefullname);
+        #endif
         
         if (result == Plugin_Stop)
         {
