@@ -224,6 +224,12 @@ stock ProjectEvent:EventMgr_RegisterEvent(Module:module, const String:eventname[
     
     // Find the function ID for the given function name.
     new Function:func = GetFunctionByName(GetMyHandle(), functionname);
+    if (func == INVALID_FUNCTION)
+    {
+        decl String:modulefullname[CM_DATA_FULLNAME];
+        ModuleMgr_ReadString(module, ModuleData_FullName, modulefullname, sizeof(modulefullname));
+        SetFailState("[Event Manager] Invalid function (%s) being registered as an event forward by module \"%s\" for event \"%s\"", functionname, modulefullname, g_EMEvents[_:eventid]);
+    }
     
     // Enable the event to be forwarded to the module, and set the function ID to the event forward.
     EventMgr_WriteFuncValue(module, eventid, func);

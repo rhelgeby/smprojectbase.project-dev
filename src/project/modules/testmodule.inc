@@ -101,6 +101,9 @@ public TestModule_OnEventsRegister()
     #if defined EVENT_MANAGER
     
         new module = _:EventMgr_GetEventOwner() - 2;
+        // This event should cause errors and not register.
+        //EventMgr_RegisterEvent(g_iTestModules[module], "Event_OnAllPluginsLoaded", "TestModule_FAILFAILFAIL");
+        
         EventMgr_RegisterEvent(g_iTestModules[module], "Event_OnEventsReady", "TestModule_OnEventsReady");
         EventMgr_RegisterEvent(g_iTestModules[module], "Event_OnMyModuleEnable", "TestModule_OnMyModuleEnable");
         EventMgr_RegisterEvent(g_iTestModules[module], "Event_OnMyModuleDisable", "TestModule_OnMyModuleDisable");
