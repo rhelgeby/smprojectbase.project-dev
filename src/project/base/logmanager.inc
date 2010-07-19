@@ -97,10 +97,8 @@ LogMgr_OnPluginStart()
     cvarLogPrintPublic =    Project_CreateConVar("log_print_public", "0", "Logs will be printed to public chat in addition to log files.");
     
     // This cvar needs the translations manager to filter out the non-admins and the access manager to determine what "admin" is.
-    #if defined TRANSLATIONS_MANAGER
-    #if defined ACCESS_MANAGER
+    #if defined TRANSLATIONS_MANAGER && defined ACCESS_MANAGER
         cvarLogPrintAdmins = Project_CreateConVar("log_print_admins", "0", "Logs will be printed to admin chat in addition to log files.");
-    #endif
     #endif
     
     // Create log commands.
@@ -218,15 +216,13 @@ stock LogMgr_Print(Module:module, LogTypes:logtype, const String:description[], 
         }
     }
     
-    #if defined TRANSLATIONS_MANAGER
-    #if defined ACCESS_MANAGER
+    #if defined TRANSLATIONS_MANAGER && defined ACCESS_MANAGER
         // Print log to all in-game admins if the cvar is enabled.
         if (LogMgr_CvarPrintAdmins())
         {
             // Print text to admins.
             TransMgr_PrintTextAll(false, true, MsgFormat_None, MsgType_Chat, _, true, logbuffer);
         }
-    #endif
     #endif
     
     // Print log to all in-game clients if the cvar is enabled.
