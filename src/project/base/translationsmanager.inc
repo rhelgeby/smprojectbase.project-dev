@@ -289,6 +289,30 @@ stock TransMgr_PrintTextAll(bool:server, bool:admin, MsgFormatting:msgformat, Ms
 }
 
 /**
+ * Replies to a client with a given message describing a targetting 
+ * failure reason. (formatted for project)
+ *
+ * Note: The translation phrases are found in common.phrases.txt.
+ *
+ * @param client		Client index, or 0 for server.
+ * @param reason		COMMAND_TARGET reason.
+ */
+stock TransMgr_ReplyToTargetError(client, reason)
+{
+    switch (reason)
+    {
+        case COMMAND_TARGET_NONE:         TransMgr_PrintText(client, MsgFormat_Plugin, MsgType_Reply, _, _, "No matching client");
+        case COMMAND_TARGET_NOT_ALIVE:    TransMgr_PrintText(client, MsgFormat_Plugin, MsgType_Reply, _, _, "Target must be alive");
+        case COMMAND_TARGET_NOT_DEAD:     TransMgr_PrintText(client, MsgFormat_Plugin, MsgType_Reply, _, _, "Target must be dead");
+        case COMMAND_TARGET_NOT_IN_GAME:  TransMgr_PrintText(client, MsgFormat_Plugin, MsgType_Reply, _, _, "Target is not in game");
+        case COMMAND_TARGET_IMMUNE:       TransMgr_PrintText(client, MsgFormat_Plugin, MsgType_Reply, _, _, "Unable to target");
+        case COMMAND_TARGET_EMPTY_FILTER: TransMgr_PrintText(client, MsgFormat_Plugin, MsgType_Reply, _, _, "No matching clients");
+        case COMMAND_TARGET_NOT_HUMAN:    TransMgr_PrintText(client, MsgFormat_Plugin, MsgType_Reply, _, _, "Cannot target bot");
+        case COMMAND_TARGET_AMBIGUOUS:    TransMgr_PrintText(client, MsgFormat_Plugin, MsgType_Reply, _, _, "More than one client matched");
+    }
+}
+
+/**
  * Translates a boolean value into a text phrase.
  * 
  * @param target        The client index.  LANG_SERVER to use server's language.
