@@ -9,13 +9,13 @@ compiling:
 
 Mercurial (or TortoiseHG) must be installed for this script to work. If you
 don't have Mercurial, there's an option to disable version info. In
-project.sp there's a line like this:
+project.inc there's a line like this:
 
-    #define ADD_VERSION_INFO
+    #define PROJECT_MERCURIAL
 
 To disable it, comment that line like this:
 
-    //#define ADD_VERSION_INFO
+    //#define PROJECT_MERCURIAL
 
 Then you should be able to compile without hgversion.inc.
 
