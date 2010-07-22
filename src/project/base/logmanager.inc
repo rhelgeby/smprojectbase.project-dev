@@ -102,8 +102,8 @@ LogMgr_OnPluginStart()
     #endif
     
     // Create log commands.
-    Project_RegServerCmd("log_whitelist_add", Command_LogWhitelistAdd, "Adds one or more modules to the whitelist.  Usage: <prefix>_log_whitelist_add <moduleshortname [module2] ...");
-    Project_RegServerCmd("log_whitelist_remove", Command_LogWhitelistRemove, "Removes one or more modules from the whitelist.  Usage: <prefix>_log_whitelist_remove <moduleshortname [module2] ...");
+    Project_RegServerCmd("log_whitelist_add", LogMgr_WhitelistAddCommand, "Adds one or more modules to the whitelist.  Usage: <prefix>_log_whitelist_add <moduleshortname [module2] ...");
+    Project_RegServerCmd("log_whitelist_remove", LogMgr_WhitelistRemCommand, "Removes one or more modules from the whitelist.  Usage: <prefix>_log_whitelist_remove <moduleshortname [module2] ...");
 }
 
 /**
@@ -305,7 +305,7 @@ stock bool:LogMgr_WhitelistRemove(Module:module)
  * 
  * @param argc      The number of arguments that the server sent with the command.
  */
-public Action:Command_LogWhitelistAdd(argc)
+public Action:LogMgr_WhitelistAddCommand(argc)
 {
     // Check if no arguments.
     if (argc < 1)
@@ -347,7 +347,7 @@ public Action:Command_LogWhitelistAdd(argc)
  * 
  * @param argc      The number of arguments that the server sent with the command.
  */
-public Action:Command_LogWhitelistRemove(argc)
+public Action:LogMgr_WhitelistRemCommand(argc)
 {
     // Check if no arguments.
     if (argc < 1)

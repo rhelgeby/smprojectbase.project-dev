@@ -105,7 +105,7 @@ TransMgr_OnPluginStart()
     TransMgr_LoadTranslations();
     
     // Create translations commands.
-    Project_RegServerCmd("reload_translations", Command_ReloadTranslations, "Reload all project translation files.");
+    Project_RegServerCmd("reload_translations", TransMgr_ReloadCommand, "Reload all project translation files.");
 }
 
 /**
@@ -505,7 +505,7 @@ stock TransMgr_LoadTranslations()
  * 
  * @param argc      The number of arguments that the server sent with the command.
  */
-public Action:Command_ReloadTranslations(arc)
+public Action:TransMgr_ReloadCommand(arc)
 {
     TransMgr_LoadTranslations();
     

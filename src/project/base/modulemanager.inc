@@ -819,7 +819,7 @@ stock BaseCmd_Init()
     // Create base command.
     #if defined PROJECT_BASE_CMD
         // Register the base command of the project module system.
-        RegConsoleCmd(PROJECT_BASE_CMD, Command_Base, "The plugins base command to handle modules.");
+        RegConsoleCmd(PROJECT_BASE_CMD, ModuleMgr_BaseCommand, "The plugins base command to handle modules.");
     #endif
     
     g_hServerSubCmds = CreateKeyValues("basecmd_server");
@@ -958,7 +958,7 @@ stock Handle:BaseCmd_GetKV(who)
  * @param client    The client index.  Or SERVER_INDEX if coming from the server.
  * @param argc      The number of arguments that the client sent with the command.
  */
-public Action:Command_Base(client, argc)
+public Action:ModuleMgr_BaseCommand(client, argc)
 {
     // Derive 'who' from the client using the command.
     new who = (client > 0 && client <= MaxClients) ? BASECMD_CLIENT : BASECMD_SERVER;
