@@ -450,6 +450,17 @@ stock PhraseToBool:TransMgr_KvPhraseToBoolEx(Handle:kv, BoolPhrases:boolphrase, 
     return TransMgr_PhraseToBoolEx(boolphrase, phrase);
 }
 
+/**
+ * Interprets a PhraseToBool enum member as a boolean value.
+ * 
+ * @param phrasebool    The PhraseToBool member to interpret.
+ * @param neither       The boolean value to return for PhraseToBool_Neither
+ */
+stock bool:TransMgr_InterpretPhraseBool(PhraseToBool:phrasebool, bool:neither)
+{
+    return (phrasebool == PhraseToBool_Neither) ? neither : bool:phrasebool;
+}
+
 // **********************************************
 //   Private API (For base project files only)
 // **********************************************
