@@ -308,14 +308,14 @@ stock bool:EventMgr_TakePriority(const String:eventname[], Module:module1, Modul
     RemoveFromArray(g_hEventModuleCache[_:eventid], mpriority1);    // Remove from the array.
     
     // Check if there is an existing slot after module2, if not then just push the handle to the end.
-    if (GetArraySize(g_hEventModuleCache[_:eventid]) < mpriority2 + 1)
+    if (GetArraySize(g_hEventModuleCache[_:eventid]) < mpriority2)
     {
         PushArrayCell(g_hEventModuleCache[_:eventid], adtModule);
     }
     else
     {
-        ShiftArrayUp(g_hEventModuleCache[_:eventid], mpriority2 + 1);   // Free a space right below module2.
-        SetArrayCell(g_hEventModuleCache[_:eventid], mpriority2 + 1, adtModule);    // Stick the copied handle one index after module2.
+        ShiftArrayUp(g_hEventModuleCache[_:eventid], mpriority2);   // Free a space right below module2.
+        SetArrayCell(g_hEventModuleCache[_:eventid], mpriority2, adtModule);    // Stick the copied handle one index after module2.
     }
     
     return true;
