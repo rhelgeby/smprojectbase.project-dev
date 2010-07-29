@@ -184,7 +184,7 @@ stock LogMgr_Print(Module:module, LogTypes:logtype, const String:description[], 
     VFormat(logbuffer, sizeof(logbuffer), text, 5);
     
     // Get the module's full name.
-    decl String:modulefullname[CM_DATA_FULLNAME];
+    decl String:modulefullname[MM_DATA_FULLNAME];
     ModuleMgr_ReadString(module, ModuleData_FullName, modulefullname, sizeof(modulefullname));
     
     // Format the text string.
@@ -332,7 +332,7 @@ public Action:LogMgr_WhitelistAddCommand(argc)
         
         LogMgr_WhitelistAdd(module);
         
-        decl String:modulefullname[CM_DATA_FULLNAME];
+        decl String:modulefullname[MM_DATA_FULLNAME];
         ModuleMgr_ReadString(module, ModuleData_FullName, modulefullname, sizeof(modulefullname));
         Project_PrintToServer("%T", "LogMgr cmd whitelistadd", LANG_SERVER, modulefullname);
     }
@@ -374,7 +374,7 @@ public Action:LogMgr_WhitelistRemCommand(argc)
         
         LogMgr_WhitelistRemove(module);
         
-        decl String:modulefullname[CM_DATA_FULLNAME];
+        decl String:modulefullname[MM_DATA_FULLNAME];
         ModuleMgr_ReadString(module, ModuleData_FullName, modulefullname, sizeof(modulefullname));
         Project_PrintToServer("%T", "LogMgr cmd whitelistremove", LANG_SERVER, modulefullname);
     }

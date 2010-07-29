@@ -190,7 +190,7 @@ stock ConfigMgr_OnPrintModuleInfo(client, Module:module)
  */
 stock ConfigRegistrationResults:ConfigMgr_Register(Module:module, const String:configreloadfunc[], const String:configpath[], &configindex = -1)
 {
-    decl String:modulefullname[CM_DATA_FULLNAME];
+    decl String:modulefullname[MM_DATA_FULLNAME];
     ModuleMgr_ReadString(module, ModuleData_FullName, modulefullname, sizeof(modulefullname));
     
     // Check if the module has registered the max number of config files.

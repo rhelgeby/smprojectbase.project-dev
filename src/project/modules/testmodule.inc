@@ -65,12 +65,12 @@ public TestModule_OnPluginStart()
         moduledata[ModuleData_Hidden] = !(bool:GetRandomInt(0, 50));
         
         Format(format1, sizeof(format1), "Module_%02d", x);
-        strcopy(moduledata[ModuleData_FullName], CM_DATA_FULLNAME, format1);
+        strcopy(moduledata[ModuleData_FullName], MM_DATA_FULLNAME, format1);
         
         Format(format1, sizeof(format1), "module%02d", x);
-        strcopy(moduledata[ModuleData_ShortName], CM_DATA_SHORTNAME, format1);
+        strcopy(moduledata[ModuleData_ShortName], MM_DATA_SHORTNAME, format1);
         
-        strcopy(moduledata[ModuleData_Description], CM_DATA_DESCRIPTION, "Module designed to test the project base.");
+        strcopy(moduledata[ModuleData_Description], MM_DATA_DESCRIPTION, "Module designed to test the project base.");
         
         moduledata[ModuleData_Dependencies][0] = INVALID_MODULE;
         

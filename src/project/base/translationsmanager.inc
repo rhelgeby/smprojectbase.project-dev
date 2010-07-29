@@ -160,7 +160,7 @@ stock TransMgr_PrintText(client, MsgFormatting:msgformat, MsgTypes:msgtype, Modu
     g_bMsgTypeColor[MsgType_Reply] = bool:(GetCmdReplySource() == SM_REPLY_TO_CHAT);
     
     // Get the name of the module if a module identifier was given.
-    new String:modulefullname[CM_DATA_FULLNAME] = "Invalid Module";
+    new String:modulefullname[MM_DATA_FULLNAME] = "Invalid Module";
     if (ModuleMgr_IsModuleValid(module))
     {
         ModuleMgr_ReadString(module, ModuleData_FullName, modulefullname, sizeof(modulefullname));

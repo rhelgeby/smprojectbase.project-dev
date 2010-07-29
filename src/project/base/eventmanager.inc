@@ -226,7 +226,7 @@ stock ProjectEvent:EventMgr_RegisterEvent(Module:module, const String:eventname[
     new Function:func = GetFunctionByName(GetMyHandle(), functionname);
     if (func == INVALID_FUNCTION)
     {
-        decl String:modulefullname[CM_DATA_FULLNAME];
+        decl String:modulefullname[MM_DATA_FULLNAME];
         ModuleMgr_ReadString(module, ModuleData_FullName, modulefullname, sizeof(modulefullname));
         SetFailState("[Event Manager] Invalid function (%s) being registered as an event forward by module \"%s\" for event \"%s\"", functionname, modulefullname, g_EMEvents[_:eventid]);
     }
@@ -488,7 +488,7 @@ stock Action:EventMgr_Forward(ProjectEvent:eventid, any:eventdata[][], numValues
         }
         
         #if defined DEBUG_EVENTS
-            decl String:modulefullname[CM_DATA_FULLNAME];
+            decl String:modulefullname[MM_DATA_FULLNAME];
             ModuleMgr_ReadString(module, ModuleData_FullName, modulefullname, sizeof(modulefullname));
             LogMessage("EVENT DEBUGGER: Event %s: Module: %s BEFORE CALLING", g_EMEvents[_:eventid], modulefullname);
         #endif
@@ -579,7 +579,7 @@ stock EventMgr_GetModuleCacheIndex(Module:module, ProjectEvent:eventid)
  */
 stock EventMgr_PrintPriority(ProjectEvent:eventid)
 {
-    decl String:modulefullname[CM_DATA_FULLNAME];
+    decl String:modulefullname[MM_DATA_FULLNAME];
     new count = GetArraySize(g_hEventModuleCache[_:eventid]);
     for (new moduleindex = 0; moduleindex < count; moduleindex++)
     {
