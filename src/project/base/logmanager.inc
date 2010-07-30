@@ -95,7 +95,7 @@ LogMgr_OnPluginStart()
     
     // Create log cvars.
     g_hCvarLog =               Project_CreateConVar("log", "1", "Enable logging in the plugin.  Error messages will always be logged.");
-    g_hCvarLogDebug =          Project_CreateConVar("log_debug", "1", "Show debug logging.  This will just create more detailed logs.");
+    g_hCvarLogDebug =          Project_CreateConVar("log_debug", "0", "Show debug logging.  This will just create more detailed logs.");
     g_hCvarLogWhitelist =      Project_CreateConVar("log_whitelist", "0", "Only modules added to the whitelist (project_log_whitelist_add) will be logged.");
     g_hCvarLogPrintPublic =    Project_CreateConVar("log_print_public", "0", "Logs will be printed to public chat in addition to log files.");
     
