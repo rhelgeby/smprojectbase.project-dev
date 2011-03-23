@@ -201,7 +201,7 @@ stock LogMgr_Print(Module:module, LogTypes:logtype, const String:description[], 
     switch (logtype)
     {
         // Normal log message.
-        case LogType_Normal:
+        case LogType_Normal, LogType_Debug:
         {
             LogMessage(logbuffer);
         }
