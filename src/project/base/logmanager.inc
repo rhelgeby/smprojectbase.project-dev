@@ -104,9 +104,14 @@ LogMgr_OnPluginStart()
         g_hCvarLogPrintAdmins = Project_CreateConVar("log_print_admins", "0", "Logs will be printed to admin chat in addition to log files.");
     #endif
     
-    // Create log commands.
-    Project_RegServerCmd("log_whitelist_add", LogMgr_WhitelistAddCommand, "Adds one or more modules to the whitelist.  Usage: <prefix>_log_whitelist_add <moduleshortname [module2] ...");
-    Project_RegServerCmd("log_whitelist_remove", LogMgr_WhitelistRemCommand, "Removes one or more modules from the whitelist.  Usage: <prefix>_log_whitelist_remove <moduleshortname [module2] ...");
+    #if defined PROJECT_BASE_CMD
+        // Register base cmds.
+        LogMgr_RegisterCmds();
+    #else
+        // Create log commands.
+        Project_RegServerCmd("log_whitelist_add", LogMgr_WhitelistAddCommand, "Adds one or more modules to the whitelist.  Usage: <prefix>_log_whitelist_add <moduleshortname [module2] ...");
+        Project_RegServerCmd("log_whitelist_rem", LogMgr_WhitelistRemCommand, "Removes one or more modules from the whitelist.  Usage: <prefix>_log_whitelist_remove <moduleshortname [module2] ...");
+    #endif
 }
 
 /**
@@ -293,7 +298,7 @@ stock bool:LogMgr_WhitelistAdd(Module:module)
  * 
  * @return          True if removed, false if it's not on the whitelist.
  */
-stock bool:LogMgr_WhitelistRemove(Module:module)
+stock bool:LogMgr_WhitelistRem(Module:module)
 {
     // Check if the module isn't already is listed.
     if (LogMgr_IsModuleOnWhitelist(module))
@@ -306,6 +311,119 @@ stock bool:LogMgr_WhitelistRemove(Module:module)
     return false;
 }
 
+// If there is a base cmd then make sub-commands in it.
+#if defined PROJECT_BASE_CMD
+
+/**
+ * Registers all default sub-commands.
+ */
+stock LogMgr_RegisterCmds()
+{
+    // Create directions.
+    new String:g_dirBlank[1][16] = {""};
+    new String:dirLog[1][16] = {"log"};
+    
+    // Server commands.
+    BaseCmd_Register(CommandFor_Server, g_dirBlank, 0, "log");
+    BaseCmd_Register(CommandFor_Server, dirLog, sizeof(dirLog), "whitelist_add", "LogMgr_BaseCmdWLAdd");
+    BaseCmd_Register(CommandFor_Server, dirLog, sizeof(dirLog), "whitelist_rem", "LogMgr_BaseCmdWLRem");
+}
+
+/**
+ * Base sub-command: "log whitelist_add"
+ * Add one or modules to the whitelist.
+ * 
+ * @param client    The client using the command.
+ * @param hParams   An ADT array with all the leftover arguments in the command-string.  Don't close this!
+ * @param argc      The number of leftover arguments. (GetArraySize(hParams))
+ */
+public LogMgr_BaseCmdWLAdd(client, Handle:hParams, argc)
+{
+    // Check if no arguments.
+    if (argc < 1)
+    {
+        Project_PrintToServer("%T", "LogMgr basecmd log whitelist_add usage", LANG_SERVER, PROJECT_CMD_PREFIX, PROJECT_CMD_PREFIX);
+        return;
+    }
+    
+    decl String:strModuleID[16];
+    new Module:module;
+    
+    // Loop through each argument.
+    for (new arg = 0; arg < argc; arg++)
+    {
+        // Get argument string.
+        GetArrayString(hParams, arg, strModuleID, sizeof(strModuleID));
+        module = ModuleMgr_FindByID(StringToInt(strModuleID), strModuleID);
+        
+        if (module == INVALID_MODULE)
+        {
+            Project_PrintToServer("%T", "ModuleMgr module invalid", LANG_SERVER, strModuleID);
+            continue;
+        }
+        
+        decl String:modulefullname[MM_DATA_FULLNAME];
+        ModuleMgr_ReadString(module, ModuleData_FullName, modulefullname, sizeof(modulefullname));
+        
+        if (LogMgr_WhitelistAdd(module))
+            Project_PrintToServer("%T", "LogMgr cmd whitelist_add", LANG_SERVER, modulefullname);
+        else
+            Project_PrintToServer("%T", "LogMgr cmd whitelist_add fail", LANG_SERVER, modulefullname);
+    }
+    
+    // Say that we handled the command so the game doesn't see it and print "Unknown command"
+    return;
+}
+
+/**
+ * Base sub-command: "log whitelist_rem"
+ * Remove one or modules from the whitelist.
+ * 
+ * @param client    The client using the command.
+ * @param hParams   An ADT array with all the leftover arguments in the command-string.  Don't close this!
+ * @param argc      The number of leftover arguments. (GetArraySize(hParams))
+ */
+public LogMgr_BaseCmdWLRem(client, Handle:hParams, argc)
+{
+    // Check if no arguments.
+    if (argc < 1)
+    {
+        Project_PrintToServer("%T", "LogMgr basecmd log whitelist_rem usage", LANG_SERVER, PROJECT_CMD_PREFIX, PROJECT_CMD_PREFIX);
+        return;
+    }
+    
+    decl String:strModuleID[16];
+    new Module:module;
+    
+    // Loop through each argument.
+    for (new arg = 0; arg < argc; arg++)
+    {
+        // Get argument string.
+        GetArrayString(hParams, arg, strModuleID, sizeof(strModuleID));
+        module = ModuleMgr_FindByID(StringToInt(strModuleID), strModuleID);
+        
+        if (module == INVALID_MODULE)
+        {
+            Project_PrintToServer("%T", "ModuleMgr module invalid", LANG_SERVER, strModuleID);
+            continue;
+        }
+        
+        decl String:modulefullname[MM_DATA_FULLNAME];
+        ModuleMgr_ReadString(module, ModuleData_FullName, modulefullname, sizeof(modulefullname));
+        
+        if (LogMgr_WhitelistRem(module))
+            Project_PrintToServer("%T", "LogMgr cmd whitelist_rem", LANG_SERVER, modulefullname);
+        else
+            Project_PrintToServer("%T", "LogMgr cmd whitelist_rem fail", LANG_SERVER, modulefullname);
+    }
+    
+    // Say that we handled the command so the game doesn't see it and print "Unknown command"
+    return;
+}
+
+// If not then use regular console commands.
+#else
+
 /**
  * Command callback: <prefix>_log_whitelist_add
  * Add one or modules to the whitelist.
@@ -317,7 +435,7 @@ public Action:LogMgr_WhitelistAddCommand(argc)
     // Check if no arguments.
     if (argc < 1)
     {
-        Project_PrintToServer("%T", "LogMgr cmd whitelistadd usage", LANG_SERVER, PROJECT_CMD_PREFIX, PROJECT_CMD_PREFIX);
+        Project_PrintToServer("%T", "LogMgr cmd whitelist_add usage", LANG_SERVER, PROJECT_CMD_PREFIX, PROJECT_CMD_PREFIX);
         return Plugin_Handled;
     }
     
@@ -337,11 +455,13 @@ public Action:LogMgr_WhitelistAddCommand(argc)
             continue;
         }
         
-        LogMgr_WhitelistAdd(module);
-        
         decl String:modulefullname[MM_DATA_FULLNAME];
         ModuleMgr_ReadString(module, ModuleData_FullName, modulefullname, sizeof(modulefullname));
-        Project_PrintToServer("%T", "LogMgr cmd whitelistadd", LANG_SERVER, modulefullname);
+        
+        if (LogMgr_WhitelistAdd(module))
+            Project_PrintToServer("%T", "LogMgr cmd whitelist_add", LANG_SERVER, modulefullname);
+        else
+            Project_PrintToServer("%T", "LogMgr cmd whitelist_add fail", LANG_SERVER, modulefullname);
     }
     
     // Say that we handled the command so the game doesn't see it and print "Unknown command"
@@ -359,7 +479,7 @@ public Action:LogMgr_WhitelistRemCommand(argc)
     // Check if no arguments.
     if (argc < 1)
     {
-        Project_PrintToServer("%T", "LogMgr cmd whitelistremove usage", LANG_SERVER, PROJECT_CMD_PREFIX, PROJECT_CMD_PREFIX);
+        Project_PrintToServer("%T", "LogMgr cmd whitelist_rem usage", LANG_SERVER, PROJECT_CMD_PREFIX, PROJECT_CMD_PREFIX);
         return Plugin_Handled;
     }
     
@@ -379,16 +499,20 @@ public Action:LogMgr_WhitelistRemCommand(argc)
             continue;
         }
         
-        LogMgr_WhitelistRemove(module);
-        
         decl String:modulefullname[MM_DATA_FULLNAME];
         ModuleMgr_ReadString(module, ModuleData_FullName, modulefullname, sizeof(modulefullname));
-        Project_PrintToServer("%T", "LogMgr cmd whitelistremove", LANG_SERVER, modulefullname);
+        
+        if (LogMgr_WhitelistRem(module))
+            Project_PrintToServer("%T", "LogMgr cmd whitelist_rem", LANG_SERVER, modulefullname);
+        else
+            Project_PrintToServer("%T", "LogMgr cmd whitelist_rem fail", LANG_SERVER, modulefullname);
     }
     
     // Say that we handled the command so the game doesn't see it and print "Unknown command"
     return Plugin_Handled;
 }
+
+#endif
 
 /**
  * These are stock functions to return the value of any of the log manager's cvars.

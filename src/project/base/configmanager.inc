@@ -612,11 +612,6 @@ stock ConfigMgr_RegisterCmds()
     BaseCmd_Register(CommandFor_Server, g_dirBlank, 0, "config");
     BaseCmd_Register(CommandFor_Server, dirConfig, sizeof(dirConfig), "reload", "ConfigMgr_BaseCmdReload");
     BaseCmd_Register(CommandFor_Server, dirConfig, sizeof(dirConfig), "reload_all", "ConfigMgr_BaseCmdReloadAll");
-    
-    // Client commands.
-    BaseCmd_Register(CommandFor_Client, g_dirBlank, 0, "credits", "BaseCmd_Credits");
-    BaseCmd_Register(CommandFor_Client, g_dirBlank, 0, "modules", "BaseCmd_List");
-    BaseCmd_Register(CommandFor_Client, g_dirBlank, 0, "version", "BaseCmd_Version");
 }
 
 /**
