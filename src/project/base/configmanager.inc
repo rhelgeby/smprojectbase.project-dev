@@ -112,9 +112,14 @@ ConfigMgr_OnPluginStart()
     // Allocate 1 index for the data we want to store for each module.
     ModuleMgr_Allocate(CM_MODULE_MAX_CONFIGS, g_iCMAllocatedIndexes);
     
-    // Create config commands.
-    Project_RegServerCmd("reload_config", ConfigMgr_ReloadCfgCommand, "Reloads a module's config files.  Usage: <prefix>_reload_config <moduleshortname> [module2] ...\nRelated command(s): <prefix>_reload_config_all");
-    Project_RegServerCmd("reload_config_all", ConfigMgr_ReloadCfgAllCommand, "Reloads all modules' config files.\nRelated command(s): <prefix>_reload_config");
+    #if defined PROJECT_BASE_CMD
+        // Register base cmds.
+        ConfigMgr_RegisterCmds();
+    #else
+        // Create config commands.
+        Project_RegServerCmd("reload_config", ConfigMgr_ReloadCfgCommand, "Reloads a module's config files.  Usage: <prefix>_reload_config <moduleshortname> [module2] ...\nRelated command(s): <prefix>_reload_config_all");
+        Project_RegServerCmd("reload_config_all", ConfigMgr_ReloadCfgAllCommand, "Reloads all modules' config files.\nRelated command(s): <prefix>_reload_config");
+    #endif
 }
 
 /**
@@ -591,6 +596,91 @@ stock ConfigMgr_WriteString(Module:module, configindex, ConfigData:data, maxlen,
     ConfigMgr_WriteAll(module, configindex, configdata);
 }
 
+// If there is a base cmd then make sub-commands in it.
+#if defined PROJECT_BASE_CMD
+
+/**
+ * Registers all default sub-commands.
+ */
+stock ConfigMgr_RegisterCmds()
+{
+    // Create directions.
+    new String:g_dirBlank[1][16] = {""};
+    new String:dirConfig[1][16] = {"config"};
+    
+    // Server commands.
+    BaseCmd_Register(CommandFor_Server, g_dirBlank, 0, "config");
+    BaseCmd_Register(CommandFor_Server, dirConfig, sizeof(dirConfig), "reload", "ConfigMgr_BaseCmdReload");
+    BaseCmd_Register(CommandFor_Server, dirConfig, sizeof(dirConfig), "reload_all", "ConfigMgr_BaseCmdReloadAll");
+    
+    // Client commands.
+    BaseCmd_Register(CommandFor_Client, g_dirBlank, 0, "credits", "BaseCmd_Credits");
+    BaseCmd_Register(CommandFor_Client, g_dirBlank, 0, "modules", "BaseCmd_List");
+    BaseCmd_Register(CommandFor_Client, g_dirBlank, 0, "version", "BaseCmd_Version");
+}
+
+/**
+ * Base sub-command: "config reload <moduleID>"
+ * Reloads a module's config files.
+ * 
+ * @param client    The client using the command.
+ * @param hParams   An ADT array with all the leftover arguments in the command-string.  Don't close this!
+ * @param argc      The number of leftover arguments. (GetArraySize(hParams))
+ */
+public ConfigMgr_BaseCmdReload(client, Handle:hParams, argc)
+{
+    // Check if no arguments.
+    if (argc < 1)
+    {
+        Project_PrintToServer("%T", "ConfigMgr basecmd reload usage", LANG_SERVER, PROJECT_CMD_PREFIX, PROJECT_CMD_PREFIX);
+        return;
+    }
+    
+    decl String:strModuleID[16];
+    new Module:module;
+    
+    // Loop through each argument.
+    for (new arg = 0; arg < argc; arg++)
+    {
+        // Get argument string.
+        GetArrayString(hParams, arg, strModuleID, sizeof(strModuleID));
+        module = ModuleMgr_FindByID(StringToInt(strModuleID), strModuleID);
+        
+        if (module == INVALID_MODULE)
+        {
+            Project_PrintToServer("%T", "ModuleMgr module invalid", LANG_SERVER, strModuleID);
+            continue;
+        }
+        
+        // Reload the module's configs.
+        ConfigMgr_ReloadConfigs(module);
+    }
+}
+
+/**
+ * Base sub-command: "config reload_all"
+ * Reloads all modules' config files.
+ * 
+ * @param client    The client using the command.
+ */
+public ConfigMgr_BaseCmdReloadAll(client)
+{
+    // Loop through all the modules.
+    new count = MODULE_COUNT;
+    for (new moduleindex = 0; moduleindex < count; moduleindex++)
+    {
+        // If the module is disabled, then stop this iteration.
+        if (ModuleMgr_IsDisabled(Module:moduleindex))
+            continue;
+        
+        // Reload the module's configs.
+        ConfigMgr_ReloadConfigs(Module:moduleindex);
+    }
+}
+
+// If not then use regular console commands.
+#else
+
 /**
  * Command callback: <prefix>_config_reload
  * Reloads a module's config files.
@@ -655,3 +745,5 @@ public Action:ConfigMgr_ReloadCfgAllCommand(argc)
         ConfigMgr_ReloadConfigs(module);
     }
 }
+
+#endif
