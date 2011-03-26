@@ -64,6 +64,14 @@ stock ForwardOnPluginStart()
  */
 #define SERVER_INDEX 0
 
+/**
+ * Generic enum for specifying whether this should apply to the server or the client.
+ */
+enum CommandFor
+{
+    CommandFor_Server,
+    CommandFor_Client
+}
 
 // **********************************************
 //                Module Manager
@@ -207,6 +215,7 @@ enum ModuleToggleQuery
  * The prefixes for any base cvars/commands.
  * These are strictly for project base cvars/commands.
  * This will not affect cvars/commands created in your modules.
+ * Note: See wrappers.inc for stocks that allow you to create cvars/commands with these prefixes.
  */
 #define PROJECT_CVAR_PREFIX PROJECT_SHORTNAME
 #define PROJECT_CMD_PREFIX  PROJECT_SHORTNAME

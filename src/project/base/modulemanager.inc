@@ -110,8 +110,10 @@ ModuleMgr_OnPluginStart()
             g_iMMMaxBlockSize = LM_DATA_CELL_COUNT;
     #endif
     
-    // Register default base cmd sub-command tree.
-    BaseCmd_Init();
+    #if defined PROJECT_BASE_CMD
+        // Register default base cmd sub-command tree.
+        BaseCmd_Init();
+    #endif
 }
 
 /**
@@ -126,8 +128,10 @@ ModuleMgr_OnPluginEnd()
         ModuleMgr_Unregister(Module:moduleindex);
     }
     
-    // Destroy base command data.
-    BaseCmd_Destroy();
+    #if defined PROJECT_BASE_CMD
+        // Destroy base command data.
+        BaseCmd_Destroy();
+    #endif
 }
 
 // **********************************************
@@ -796,12 +800,6 @@ stock Handle:ModuleMgr_GetList()
 #if defined PROJECT_BASE_CMD
 
 /**
- * Defines used to refer to the server sub-commands or client sub-commands.
- */
-#define BASECMD_SERVER 0
-#define BASECMD_CLIENT 1
-
-/**
  * Base arrays that hold all sub-commands and their sub-commands.
  */
 new Handle:g_hServerSubCmds;
@@ -839,37 +837,32 @@ stock BaseCmd_Destroy()
 }
 
 /**
- * Common directions.
- */
-// These would be the directions to a 1st-level sub-command.  (none)
-new String:g_dirBlank[1][16] = {""};
-
-/**
  * Registers all default sub-commands.
  */
 stock BaseCmd_RegisterDefs()
 {
     // Create directions.
+    new String:g_dirBlank[1][16] = {""};
     new String:dirModules[1][16] = {"modules"};
     
     // Server commands.
-    BaseCmd_Register(BASECMD_SERVER, g_dirBlank, 0, "credits", "BaseCmd_Credits");
-    BaseCmd_Register(BASECMD_SERVER, g_dirBlank, 0, "dumpcmdtree", "BaseCmd_DumpCmdTree");
-    BaseCmd_Register(BASECMD_SERVER, g_dirBlank, 0, "modules");
-    BaseCmd_Register(BASECMD_SERVER, g_dirBlank, 0, "version", "BaseCmd_Version");
+    BaseCmd_Register(CommandFor_Server, g_dirBlank, 0, "credits", "BaseCmd_Credits");
+    BaseCmd_Register(CommandFor_Server, g_dirBlank, 0, "dumpcmdtree", "BaseCmd_DumpCmdTree");
+    BaseCmd_Register(CommandFor_Server, g_dirBlank, 0, "modules");
+    BaseCmd_Register(CommandFor_Server, g_dirBlank, 0, "version", "BaseCmd_Version");
     
-    BaseCmd_Register(BASECMD_SERVER, dirModules, sizeof(dirModules), "enable",      "BaseCmd_Enable");
-    BaseCmd_Register(BASECMD_SERVER, dirModules, sizeof(dirModules), "disable",     "BaseCmd_Disable");
-    BaseCmd_Register(BASECMD_SERVER, dirModules, sizeof(dirModules), "disable_all", "BaseCmd_DisableAll");
-    BaseCmd_Register(BASECMD_SERVER, dirModules, sizeof(dirModules), "info",        "BaseCmd_Info");
-    BaseCmd_Register(BASECMD_SERVER, dirModules, sizeof(dirModules), "list",        "BaseCmd_List");
-    BaseCmd_Register(BASECMD_SERVER, dirModules, sizeof(dirModules), "refresh",     "BaseCmd_Refresh");
-    BaseCmd_Register(BASECMD_SERVER, dirModules, sizeof(dirModules), "reload",      "BaseCmd_Reload");
+    BaseCmd_Register(CommandFor_Server, dirModules, sizeof(dirModules), "enable",      "BaseCmd_Enable");
+    BaseCmd_Register(CommandFor_Server, dirModules, sizeof(dirModules), "disable",     "BaseCmd_Disable");
+    BaseCmd_Register(CommandFor_Server, dirModules, sizeof(dirModules), "disable_all", "BaseCmd_DisableAll");
+    BaseCmd_Register(CommandFor_Server, dirModules, sizeof(dirModules), "info",        "BaseCmd_Info");
+    BaseCmd_Register(CommandFor_Server, dirModules, sizeof(dirModules), "list",        "BaseCmd_List");
+    BaseCmd_Register(CommandFor_Server, dirModules, sizeof(dirModules), "refresh",     "BaseCmd_Refresh");
+    BaseCmd_Register(CommandFor_Server, dirModules, sizeof(dirModules), "reload",      "BaseCmd_Reload");
     
     // Client commands.
-    BaseCmd_Register(BASECMD_CLIENT, g_dirBlank, 0, "credits", "BaseCmd_Credits");
-    BaseCmd_Register(BASECMD_CLIENT, g_dirBlank, 0, "modules", "BaseCmd_List");
-    BaseCmd_Register(BASECMD_CLIENT, g_dirBlank, 0, "version", "BaseCmd_Version");
+    BaseCmd_Register(CommandFor_Client, g_dirBlank, 0, "credits", "BaseCmd_Credits");
+    BaseCmd_Register(CommandFor_Client, g_dirBlank, 0, "modules", "BaseCmd_List");
+    BaseCmd_Register(CommandFor_Client, g_dirBlank, 0, "version", "BaseCmd_Version");
 }
 
 /**
@@ -884,10 +877,10 @@ stock BaseCmd_RegisterDefs()
  * @param subcommand    The sub-command to register.  (Max length is 16 characters)
  * @param callback      The function called when the sub-command is used.
  */
-stock BaseCmd_Register(who, const String:directions[][16], dircount, const String:subcommand[], const String:callback[] = "")
+stock BaseCmd_Register(CommandFor:who, const String:directions[][16], dircount, const String:subcommand[], const String:callback[] = "")
 {
     // Get the handle of the kv we are going to modify.
-    new Handle:kv = (who == BASECMD_SERVER) ? g_hServerSubCmds : g_hClientSubCmds;
+    new Handle:kv = (who == CommandFor_Server) ? g_hServerSubCmds : g_hClientSubCmds;
     KvRewind(kv);
     
     // This will take us to the depth we want to be at to create the new sub-command.
@@ -919,10 +912,10 @@ stock BaseCmd_Register(who, const String:directions[][16], dircount, const Strin
  * 
  * @return              True if the sub-command was unregistered, false if it didn't exist.
  */
-stock bool:BaseCmd_Unregister(who, const String:directions[][16], dircount, const String:subcommand[], const String:callback[] = "")
+stock bool:BaseCmd_Unregister(CommandFor:who, const String:directions[][16], dircount, const String:subcommand[], const String:callback[] = "")
 {
     // Get the handle of the kv we are going to modify.
-    new Handle:kv = (who == BASECMD_SERVER) ? g_hServerSubCmds : g_hClientSubCmds;
+    new Handle:kv = (who == CommandFor_Server) ? g_hServerSubCmds : g_hClientSubCmds;
     KvRewind(kv);
     
     // This will take us to the depth we want to be at to create the new sub-command.
@@ -946,9 +939,9 @@ stock bool:BaseCmd_Unregister(who, const String:directions[][16], dircount, cons
  * 
  * @return      The KV array handle depending on 'who' it's for.
  */
-stock Handle:BaseCmd_GetKV(who)
+stock Handle:BaseCmd_GetKV(CommandFor:who)
 {
-    return (who == BASECMD_SERVER) ? g_hServerSubCmds : g_hClientSubCmds;
+    return (who == CommandFor_Server) ? g_hServerSubCmds : g_hClientSubCmds;
 }
 
 /**
@@ -961,11 +954,11 @@ stock Handle:BaseCmd_GetKV(who)
 public Action:ModuleMgr_BaseCommand(client, argc)
 {
     // Derive 'who' from the client using the command.
-    new who = (client > 0 && client <= MaxClients) ? BASECMD_CLIENT : BASECMD_SERVER;
+    new CommandFor:who = (client > 0 && client <= MaxClients) ? CommandFor_Client : CommandFor_Server;
     
     // Set to "server" if the server is using the command, "client" if client is.
     new String:strWho[8];
-    strWho = (who == BASECMD_SERVER) ? "server" : "client";
+    strWho = (who == CommandFor_Server) ? "server" : "client";
     
     // Get all arguments.
     new String:strArgs[argc + 1][16];
@@ -1080,7 +1073,7 @@ public BaseCmd_DumpCmdTree(client, Handle:hParams, argc)
     decl String:path[PLATFORM_MAX_PATH];
     GetArrayString(hParams, 0, path, sizeof(path));
     
-    new Handle:kv = BaseCmd_GetKV(BASECMD_SERVER);
+    new Handle:kv = BaseCmd_GetKV(CommandFor_Server);
     KvRewind(kv);
     KeyValuesToFile(kv, path);
 }
@@ -1183,7 +1176,7 @@ public BaseCmd_Disable(client, Handle:hParams, argc)
 }
 
 /**
- * Base sub-command: "modules disable_all <moduleID>"
+ * Base sub-command: "modules disable_all"
  * Disables all modules.
  * 
  * @param client    The client using the command.
