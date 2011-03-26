@@ -44,6 +44,11 @@
 		"en"		"Manage configs"
 	}
 
+	"BaseCmd server log description"
+	{
+		"en"		"Manage log settings"
+	}
+
 	// {1}: PROJECT_FULLNAME
 	"BaseCmd server modules syntax"
 	{
@@ -96,6 +101,29 @@
 	"BaseCmd server config reload description"
 	{
 		"en"		"Reloads a module's configs"
+	}
+
+	"BaseCmd server config reload_all description"
+	{
+		"en"		"Reloads all modules' configs"
+	}
+
+	// {1}: PROJECT_FULLNAME
+	"BaseCmd server log syntax"
+	{
+		"#format"	"{1:s}"
+		"en"		"{1} Log Settings Menu:"
+	}
+
+	"BaseCmd server log whitelist_add description"
+	{
+		"en"		"Add a module to the whitelist"
+	}
+
+	
+	"BaseCmd server log whitelist_rem description"
+	{
+		"en"		"Remove a module from the whitelist"
 	}
 
 	// {1}: PROJECT_FULLNAME
