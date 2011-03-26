@@ -103,9 +103,6 @@ TransMgr_OnPluginStart()
 {
     // Load all the translations for the project.
     TransMgr_LoadTranslations();
-    
-    // Create translations commands.
-    Project_RegServerCmd("reload_translations", TransMgr_ReloadCommand, "Reload all project translation files.");
 }
 
 /**
@@ -508,17 +505,4 @@ stock TransMgr_LoadTranslations()
     
     // Loads extra translations from the main project.inc file.
     Project_LoadExtraTranslations(true);
-}
-
-/**
- * Command callback: project_reload_translations
- * Reloads all translation files used in the project.
- * 
- * @param argc      The number of arguments that the server sent with the command.
- */
-public Action:TransMgr_ReloadCommand(arc)
-{
-    TransMgr_LoadTranslations();
-    
-    TransMgr_PrintText(SERVER_INDEX, MsgFormat_Plugin, MsgType_Server, _, false, "TransMgr cmd reloadtranslations");
 }
