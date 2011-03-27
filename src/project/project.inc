@@ -138,11 +138,12 @@ enum ModuleData
  */
 enum ModuleToggleQuery
 {
-    ToggleQuery_Successful, /** The module was successfully enabled/disabled. */
-    ToggleQuery_Stopped,    /** The query was stopped because it was redundant. (already enabled/disabled) */
-    ToggleQuery_Refuse,     /** A module refused to enable/disable. */
-    ToggleQuery_Dependent,  /** Enable - The module couldn't be loaded because at least one dependency isn't loaded. */
-                            /** Disable - Other dependent modules were disabled as a result of this module being disabled. */
+    ToggleQuery_Successful,     /** The module was successfully enabled/disabled. */
+    ToggleQuery_Stopped,        /** The query was stopped because it was redundant. (already enabled/disabled) */
+    ToggleQuery_Refuse,         /** A module refused to enable/disable without a refusal message. */
+    ToggleQuery_RefuseWithMsg,  /** A module refused to enable/disable and printed a refusal message. */
+    ToggleQuery_Dependent,      /** Enable - The module couldn't be loaded because at least one dependency isn't loaded. */
+                                /** Disable - Other dependent modules were disabled as a result of this module being disabled. */
 }
 
 /**

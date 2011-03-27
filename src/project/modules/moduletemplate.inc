@@ -158,17 +158,13 @@ public Action:<FuncPrefix>_OnModuleEnable(Module:module)
 
 /**
  * The module that hooked this event callback has been enabled.
- */
-public <FuncPrefix>_OnMyModuleEnable()
-{
-}
-
-/**
- * The module that hooked this event callback has been enabled.
+ * 
+ * @param refusalmsg    The string that is printed if Plugin_Handled is returned and it is non-empty.
+ * @param maxlen        The max length of the string.
  * 
  * @return      Return Plugin_Handled to stop enable, and Plugin_Continue to allow it.
  */
-public Action:<FuncPrefix>_OnMyModuleEnable()
+public Action:<FuncPrefix>_OnMyModuleEnable(String:refusalmsg[], maxlen)
 {
 }
 
@@ -190,17 +186,13 @@ public Action:<FuncPrefix>_OnModuleDisable(Module:module)
 
 /**
  * The module that hooked this event callback has been disabled.
- */
-public <FuncPrefix>_OnMyModuleDisable()
-{
-}
-
-/**
- * The module that hooked this event callback has been disabled.
+ * 
+ * @param refusalmsg    The string that is printed if Plugin_Handled is returned and it is non-empty.
+ * @param maxlen        The max length of the string.
  * 
  * @return      Return Plugin_Handled to stop disable, and Plugin_Continue to allow it.
  */
-public Action:<FuncPrefix>_OnMyModuleDisable()
+public Action:<FuncPrefix>_OnMyModuleDisable(String:refusalmsg[], maxlen)
 {
 }
 
