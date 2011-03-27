@@ -502,6 +502,13 @@ stock ModuleMgr_FindDependentModules(Module:module, Module:dependencies[MM_DATA_
             if (_dependencies[_dindex] == INVALID_MODULE)
                 break;
             
+            if (dindex >= MM_DATA_DEPENDENCIES)
+            {
+                decl String:modulefullname[MM_DATA_FULLNAME];
+                ModuleMgr_ReadString(Module:moduleindex, ModuleData_FullName, modulefullname, sizeof(modulefullname));
+                SetFailState("More than %d modules depend on module \"%s\".  Define \"MM_DATA_DEPENDENCIES\" must be increased.", MM_DATA_DEPENDENCIES, modulefullname);
+            }
+            
             if (_dependencies[_dindex] == module)
             {
                 dependencies[dindex++] = Module:moduleindex;
