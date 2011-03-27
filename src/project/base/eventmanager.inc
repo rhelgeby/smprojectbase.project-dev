@@ -227,6 +227,17 @@ stock ProjectEvent:EventMgr_RegisterEvent(Module:module, const String:eventname[
         SetFailState("[Event Manager] Invalid event name (%s) in module \"%s\". Check for typos.", eventname, modulefullname);
     }
     
+    // Check for duplicates because it might be a copy-paste error that is hard to catch when nothing is reported.
+    new count = GetArraySize(g_hEventModuleCache[_:eventid]);
+    for (new index = 0; index < count; index++)
+    {
+        if (module == GetArrayCell(g_hEventModuleCache[_:eventid], index))
+        {
+            ModuleMgr_ReadString(module, ModuleData_FullName, modulefullname, sizeof(modulefullname));
+            SetFailState("[Event Manager] Module \"%s\" tried to register the same event (%s) twice.", modulefullname, eventname);
+        }
+    }
+    
     // Find the function ID for the given function name.
     new Function:func = GetFunctionByName(GetMyHandle(), functionname);
     if (func == INVALID_FUNCTION)
