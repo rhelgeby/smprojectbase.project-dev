@@ -189,14 +189,16 @@ public KvCache:TestModule_ConfigCache(Handle:kv, sectionindex, const String:sect
 
 #if defined EVENT_MANAGER
 
-public Action:TestModule_OnMyModuleEnable()
+public Action:TestModule_OnMyModuleEnable(String:refusalmsg[], maxlen)
 {
+    strcopy(refusalmsg, maxlen, "Refusal msg: Module no enable.");
     return Plugin_Handled;
 }
 
-public TestModule_OnMyModuleDisable()
+public Action:TestModule_OnMyModuleDisable(String:refusalmsg[], maxlen)
 {
-    PrintToServer("Module disabled.");
+    strcopy(refusalmsg, maxlen, "Refusal msg: Module no disable.");
+    return Plugin_Continue; // message should be ignored.
 }
 
 public TestModule_OnClientPutInServer(client)
