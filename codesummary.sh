@@ -2,8 +2,6 @@
 
 cd src/
 
-echo "$(hg tip)\n"
-
 LINES_MAIN=`wc *.sp -l | cut -d ' ' -f1`
 LINES_OTHER=`wc project/*.* -l | tail -n1 | sed 's/^ *\(.*\) *$/\1/' | cut -d ' ' -f1`
 

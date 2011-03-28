@@ -30,8 +30,8 @@
  */
 #define VERSION_INFO
 
-#if defined PROJECT_MERCURIAL
-    #include "project/base/hgversion"
+#if defined PROJECT_IN_VCS
+    #include "project/base/vcsversion"
 #endif
 
 /**
@@ -48,8 +48,8 @@ VersionInfo_OnPluginStart()
         decl String:publiccvarvalue[32];
         strcopy(publiccvarvalue, sizeof(publiccvarvalue), PROJECT_VERSION);
         
-        #if defined PROJECT_MERCURIAL
-            Format(publiccvarvalue, sizeof(publiccvarvalue), "%s r%s", publiccvarvalue, PROJECT_MERCURIAL_REVISION);
+        #if defined PROJECT_IN_VCS
+            Format(publiccvarvalue, sizeof(publiccvarvalue), "%s r%s", publiccvarvalue, PROJECT_VCS_REVISION);
         #endif
         
         CreateConVar(PROJECT_PUBLIC_CVAR, publiccvarvalue, "Project version information.", FCVAR_PLUGIN|FCVAR_SPONLY|FCVAR_UNLOGGED|FCVAR_DONTRECORD|FCVAR_REPLICATED|FCVAR_NOTIFY);
@@ -103,14 +103,14 @@ stock VersionPrint(client)
     Format(linebuffer, sizeof(linebuffer), FORMATSTRING, "Version", PROJECT_VERSION);
     StrCat(buffer, sizeof(buffer), linebuffer);
     
-    #if defined PROJECT_MERCURIAL
+    #if defined PROJECT_IN_VCS
         Format(linebuffer, sizeof(linebuffer), FORMATSTRING, "Development Branch", PROJECT_BRANCH);
         StrCat(buffer, sizeof(buffer), linebuffer);
         
-        Format(linebuffer, sizeof(linebuffer), FORMATSTRING, "Build", PROJECT_MERCURIAL_REVISION);
+        Format(linebuffer, sizeof(linebuffer), FORMATSTRING, "Build ID", PROJECT_VCS_REVISION);
         StrCat(buffer, sizeof(buffer), linebuffer);
         
-        Format(linebuffer, sizeof(linebuffer), FORMATSTRING, "Compile Date", PROJECT_MERCURIAL_DATE);
+        Format(linebuffer, sizeof(linebuffer), FORMATSTRING, "Compile Date", PROJECT_VCS_DATE);
         StrCat(buffer, sizeof(buffer), linebuffer);
     #endif
     
