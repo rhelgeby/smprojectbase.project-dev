@@ -1,5 +1,5 @@
-This plugin has a command for dumping detailed version info (project_version) based
-on info from a automatically generated file (hgversion.inc).
+This plugin has a command for dumping detailed version info (project_version)
+based on info from a automatically generated file (src/base/vcsversion.inc).
 
 There's a script that generate this file and must be executed every time before
 compiling:
@@ -7,17 +7,16 @@ compiling:
     Linux: updateversion.sh
     Windows: updateversion.bat (Executes updateversion.sh using Cygwin)
 
-Mercurial (or TortoiseHG) must be installed for this script to work. If you
-don't have Mercurial, there's an option to disable version info. In
-project.inc there's a line like this:
+Mercurial (or TortoiseHG) must be installed for this script to work. If you use
+something else, update the scripts' variables with correct commands for dumping
+info in the VCS you use.
 
-    #define PROJECT_MERCURIAL
+If you don't use a VCS, there's an option to disable version info. Comment this
+line in project.inc:
 
-To disable it, comment that line like this:
+    #define PROJECT_IN_VCS
 
-    //#define PROJECT_MERCURIAL
-
-Then you should be able to compile without hgversion.inc.
+Then you should be able to compile without vcsversion.inc.
 
 On linux use the makefile to compile since that one will do most of the work.
 Make sure you clean any existing builds before compiling:

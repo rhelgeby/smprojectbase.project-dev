@@ -1,9 +1,13 @@
 @echo off
 
+:: Update these with your project's name.
+set SOURCEFILE=src\project.sp
+set PLUGIN=project.smx
+
 set SOURCEDIR=src
 set SMINCLUDES=env\include
 set BUILDDIR=build
-set SPCOMP=env\win32\bin\spcomp.exe
+set SPCOMP=env\win32\bin\spcomp-1.3.7-3113.exe
 set VERSIONDUMP=updateversion.bat
 
 :: Dump version and revision information first.
@@ -17,8 +21,9 @@ if not exist "%BUILDDIR%" (
 
 :: Compile.
 echo Starting compiler:
-%SPCOMP% -i%SOURCEDIR% -i%SOURCEDIR%/include -i%SMINCLUDES% -o%BUILDDIR%/project.smx %SOURCEDIR%\project.sp
+%SPCOMP% -i%SOURCEDIR% -i%SMINCLUDES% -o%BUILDDIR%/%PLUGIN% %SOURCEFILE%
 
+echo Compiling done. This script is looped, close if you're done.
 pause
 
 compile.bat
