@@ -49,6 +49,12 @@ stock Handle:Project_CreateConVar(const String:name[], const String:defaultValue
     decl String:project_cvarname[64];
     Format(project_cvarname, sizeof(project_cvarname), "%s_%s", PROJECT_CVAR_PREFIX, name);
     
+    // If the cvar exists, don't create it, return its handle.
+    // This is useful because if multiple parts of the project create the same cvar, they can share it the one that already exists.
+    new Handle:cvar = FindConVar(project_cvarname);
+    if (cvar != INVALID_HANDLE)
+        return cvar;
+    
     // Replace the define name with the actual cvar prefix.
     decl String:fmtdescription[1024];
     strcopy(fmtdescription, sizeof(fmtdescription), description);
