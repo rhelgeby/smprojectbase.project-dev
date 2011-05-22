@@ -1,13 +1,13 @@
 /*
  * ============================================================================
  *
- *  Project
+ *  SourceMod Project Base
  *
  *  File:          testmodule.inc
  *  Type:          Module
  *  Description:   Test module designed with no other purpose other than testing project base components.
  *
- *  Copyright (C) 2009-2010  Greyscale
+ *  Copyright (C) 2009-2011  Greyscale
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by

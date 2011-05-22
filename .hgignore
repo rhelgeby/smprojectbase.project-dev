@@ -8,3 +8,5 @@ release/*
 
 patch.diff
 patch.txt
+
+.DS_Store
