@@ -497,10 +497,9 @@ stock TransMgr_LoadTranslations()
                 // Format a path to the file, relative to the "translations" folder.
                 Format(transfilepath, sizeof(transfilepath), "%s/%s", TM_BASE_DIR, filename);
                 LoadTranslations(transfilepath);
-                
-                LogMessage("[Translations Manager] Loaded \"%s\"", transfilepath);
             }
         }
+        LogMessage("[Translations Manager] Successfully loaded all translation files from %s", fulltransfilepath);
     #endif
     
     // Loads extra translations from the main project.inc file.
