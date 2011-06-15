@@ -162,7 +162,7 @@ public Action:<FuncPrefix>_OnModuleEnable(Module:module)
  * @param refusalmsg    The string that is printed if Plugin_Handled is returned and it is non-empty.
  * @param maxlen        The max length of the string.
  * 
- * @return      Return Plugin_Handled to stop enable, and Plugin_Continue to allow it.
+ * @return              Return Plugin_Handled to stop enable, and Plugin_Continue to allow it.
  */
 public Action:<FuncPrefix>_OnMyModuleEnable(String:refusalmsg[], maxlen)
 {
@@ -190,7 +190,7 @@ public Action:<FuncPrefix>_OnModuleDisable(Module:module)
  * @param refusalmsg    The string that is printed if Plugin_Handled is returned and it is non-empty.
  * @param maxlen        The max length of the string.
  * 
- * @return      Return Plugin_Handled to stop disable, and Plugin_Continue to allow it.
+ * @return              Return Plugin_Handled to stop disable, and Plugin_Continue to allow it.
  */
 public Action:<FuncPrefix>_OnMyModuleDisable(String:refusalmsg[], maxlen)
 {
