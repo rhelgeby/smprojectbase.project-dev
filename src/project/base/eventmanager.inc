@@ -117,19 +117,6 @@ EventMgr_OnPluginStart()
  */
 EventMgr_OnPluginEnd()
 {
-    // Loop through all the modules, and disable them.
-    new Module:module;
-    new count = MODULE_COUNT;
-    for (new moduleindex = 0; moduleindex < count; moduleindex++)
-    {
-        // Read moduleindex as a Module type.
-        module = Module:moduleindex;
-        
-        // Disable before unregistering.
-        if (!ModuleMgr_IsDisabled(module))
-            ModuleMgr_Disable(module);
-    }
-    
     // Cleanup the event module cache.
     for (new eindex = 0; eindex < sizeof(g_hEventModuleCache); eindex++)
         CloseHandle(g_hEventModuleCache[eindex]);
@@ -547,6 +534,45 @@ stock Action:EventMgr_Forward(ProjectEvent:eventid, any:eventdata[][], numValues
 stock Module:EventMgr_GetEventOwner()
 {
     return g_ForwardToModule;
+}
+
+/**
+ * This simply calls a global (or private) forward given an array of data in the same format as module forwarding.
+ * It's a convenience function for forwards that are already internal module events.
+ * 
+ * @param eventdata         An array with all data to forward to each module.
+ * @param numValues         The number of elements in the first dimension of the eventdata array.
+ * @param size              The max size of the arrays/strings if passing them through eventdata.  Otherwise set this to 1.
+ * @param eventdatatypes    An array of datatypes for each event value.  See enum EventDataTypes.  This should line up with eventdata.
+ * @param hForward          The handle to the global forward you want to call.
+ * 
+ * @return                  Returns whatever you defined the forward to return.
+ */
+public Action:EventMgr_ForwardToPlugins(any:eventdata[][], numValues, size, EventDataTypes:eventdatatypes[], Handle:hForward)
+{
+    new Action:result;
+    
+    // Call the event forward.
+    Call_StartForward(hForward);
+    
+    // Push each data value into the function parameter list.
+    // Loop through each event value.
+    for (new x = 0; x < numValues; x++)
+    {
+        switch (eventdatatypes[x])
+        {
+            case DataType_Cell:         Call_PushCell(_:eventdata[x][0]);
+            case DataType_CellRef:      Call_PushCellRef(_:eventdata[x][0]);
+            case DataType_Float:        Call_PushFloat(Float:eventdata[x][0]);
+            case DataType_FloatRef:     Call_PushFloatRef(Float:eventdata[x][0]);
+            case DataType_Array:        Call_PushArray(eventdata[x], size);
+            case DataType_ArrayRef:     Call_PushArrayEx(eventdata[x], size, SM_PARAM_COPYBACK);
+            case DataType_String:       Call_PushString(eventdata[x]);
+            case DataType_StringRef:    Call_PushStringEx(eventdata[x], size, 0, SM_PARAM_COPYBACK);
+        }
+    }
+    Call_Finish(result);
+    return result;
 }
 
 // **********************************************
