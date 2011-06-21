@@ -540,15 +540,15 @@ stock Module:EventMgr_GetEventOwner()
  * This simply calls a global (or private) forward given an array of data in the same format as module forwarding.
  * It's a convenience function for forwards that are already internal module events.
  * 
+ * @param hForward          The handle to the global forward you want to call.
  * @param eventdata         An array with all data to forward to each module.
  * @param numValues         The number of elements in the first dimension of the eventdata array.
  * @param size              The max size of the arrays/strings if passing them through eventdata.  Otherwise set this to 1.
  * @param eventdatatypes    An array of datatypes for each event value.  See enum EventDataTypes.  This should line up with eventdata.
- * @param hForward          The handle to the global forward you want to call.
  * 
  * @return                  Returns whatever you defined the forward to return.
  */
-public Action:EventMgr_ForwardToPlugins(any:eventdata[][], numValues, size, EventDataTypes:eventdatatypes[], Handle:hForward)
+public Action:EventMgr_ForwardToPlugins(Handle:hForward, any:eventdata[][], numValues, size, EventDataTypes:eventdatatypes[])
 {
     new Action:result;
     
