@@ -346,7 +346,7 @@ public LogMgr_BaseCmdWLAdd(client, Handle:hParams, argc)
         return;
     }
     
-    decl String:strModuleID[16];
+    decl String:strModuleID[MM_DATA_SHORTNAME];
     new Module:module;
     
     // Loop through each argument.
@@ -392,7 +392,7 @@ public LogMgr_BaseCmdWLRem(client, Handle:hParams, argc)
         return;
     }
     
-    decl String:strModuleID[16];
+    decl String:strModuleID[MM_DATA_SHORTNAME];
     new Module:module;
     
     // Loop through each argument.
@@ -439,7 +439,7 @@ public Action:LogMgr_WhitelistAddCommand(argc)
         return Plugin_Handled;
     }
     
-    decl String:strModuleID[16];
+    decl String:strModuleID[MM_DATA_SHORTNAME];
     new Module:module;
     
     // Loop through each argument.
@@ -483,7 +483,7 @@ public Action:LogMgr_WhitelistRemCommand(argc)
         return Plugin_Handled;
     }
     
-    decl String:strModuleID[16];
+    decl String:strModuleID[MM_DATA_SHORTNAME];
     new Module:module;
     
     // Loop through each argument.

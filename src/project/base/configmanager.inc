@@ -631,7 +631,7 @@ public ConfigMgr_BaseCmdReload(client, Handle:hParams, argc)
         return;
     }
     
-    decl String:strModuleID[16];
+    decl String:strModuleID[MM_DATA_SHORTNAME];
     new Module:module;
     
     // Loop through each argument.
@@ -691,7 +691,7 @@ public Action:ConfigMgr_ReloadCfgCommand(argc)
         return Plugin_Handled;
     }
     
-    decl String:strModuleID[16];
+    decl String:strModuleID[MM_DATA_SHORTNAME];
     new Module:module;
     
     // Loop through each argument.
