@@ -548,7 +548,7 @@ stock Module:EventMgr_GetEventOwner()
  * 
  * @return                  Returns whatever you defined the forward to return.
  */
-public Action:EventMgr_ForwardToPlugins(Handle:hForward, any:eventdata[][], numValues, size, EventDataTypes:eventdatatypes[])
+public any:EventMgr_ForwardToPlugins(Handle:hForward, any:eventdata[][], numValues, size, EventDataTypes:eventdatatypes[])
 {
     new Action:result;
     
