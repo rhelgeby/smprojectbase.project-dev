@@ -189,6 +189,12 @@
 		"en"		"\"{1}\" ({2}) aka {3}"
 	}
 
+	"ModuleMgr modules list client"
+	{
+		"#format"	"{1:s},{2:s}"
+		"en"		"\"{1}\" - {2}"
+	}
+
 	"ModuleMgr modules list hidden"
 	{
 		"en"		"<Hidden>"
