@@ -991,9 +991,9 @@ public Action:ModuleMgr_BaseCommand(client, argc)
     strWho = (who == CommandFor_Server) ? "server" : "client";
     
     // Get all arguments.
-    new String:strArgs[argc + 1][16];
+    new String:strArgs[argc + 1][64];
     for (new arg = 0; arg <= argc; arg++)
-        GetCmdArg(arg, strArgs[arg], 16);
+        GetCmdArg(arg, strArgs[arg], 64);
     
     // Build directions from the arguments.
     
@@ -1297,6 +1297,7 @@ public BaseCmd_List(client)
 {
     decl String:modulefullname[MM_DATA_FULLNAME];
     decl String:moduleshortname[MM_DATA_SHORTNAME];
+    decl String:moduledescription[MM_DATA_DESCRIPTION];
     new bool:bModuleDisabled;
     decl String:strModuleEnabled[16];
     decl String:line[256];
@@ -1323,17 +1324,30 @@ public BaseCmd_List(client)
             IntToString(_:!bModuleDisabled, strModuleEnabled, sizeof(strModuleEnabled));
         #endif
         
-        // If the module is hidden then don't list it.
-        if (bool:ModuleMgr_ReadCell(module, ModuleData_Hidden))
-            Format(line, sizeof(line), "%T", "ModuleMgr modules list hidden", client);
-        
+        // Server and client see different things.
+        if (client == SERVER_INDEX)
+        {
+            // If the module is hidden then don't list it.
+            if (bool:ModuleMgr_ReadCell(module, ModuleData_Hidden))
+                Format(line, sizeof(line), "%T", "ModuleMgr modules list hidden", client);
+            
+            else
+                Format(line, sizeof(line), "%T", "ModuleMgr modules list", client, modulefullname, strModuleEnabled, moduleshortname);
+            Format(line, sizeof(line), "  %02d %s", moduleID, line);
+        }
         else
-            Format(line, sizeof(line), "%T", "ModuleMgr modules list", client, modulefullname, strModuleEnabled, moduleshortname);
-        
-        // Format on the moduleID?
-        (client == SERVER_INDEX) ?  Format(line, sizeof(line), "  %02d %s", moduleID, line) :
-                                    Format(line, sizeof(line), "  %s", line);
-        
+        {
+            // Don't show hidden modules to clients.
+            if (bool:ModuleMgr_ReadCell(module, ModuleData_Hidden))
+                continue;
+            
+            // Don't show disabled modules to clients.
+            if (bModuleDisabled)
+                continue;
+            
+            ModuleMgr_ReadString(module, ModuleData_Description, moduledescription, sizeof(moduledescription));
+            Format(line, sizeof(line), "  %T", "ModuleMgr modules list client", client, modulefullname, moduledescription);
+        }
         ReplyToCommand(client, line);
     }
 }
