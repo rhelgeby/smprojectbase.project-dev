@@ -362,9 +362,9 @@ stock Handle:ConfigMgr_CacheFile(Module:module, configindex, maxlen, &count = 0)
     // Create the array we are going to return.
     new Handle:hCache = CreateArray(maxlen);
     
-    decl String:line[maxlen];
+    decl String:line[512];
     count = 0;
-    while(ReadFileLine(hConfig, line, maxlen))
+    while(ReadFileLine(hConfig, line, sizeof(line)))
     {
         // Cut out comments at the end of a line.
         if (StrContains(line, "//") > -1)
