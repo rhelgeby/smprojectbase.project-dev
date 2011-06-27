@@ -138,7 +138,8 @@ stock ConfigMgr_OnModuleRegister(Handle:adtModule)
 {
     // Push the config data arrays for a module.
     // This is being pushed into our allocated space for config path data.
-    new ConfigData:moduleconfigs[CM_MODULE_MAX_CONFIGS];
+    new moduleconfigs[ConfigData];
+    moduleconfigs[ConfigData_ReloadFunc] = INVALID_FUNCTION; // Initialize to INVALID_FUNCTION.
     for (new pindex = 0; pindex < CM_MODULE_MAX_CONFIGS; pindex++)
         PushArrayArray(adtModule, moduleconfigs[0], sizeof(moduleconfigs));
 }
@@ -346,12 +347,12 @@ stock ConfigMgr_CacheKv(Module:module, configindex, const String:funcCache[])
 stock Handle:ConfigMgr_CacheFile(Module:module, configindex, maxlen, &count = 0)
 {
     decl String:configpath[CM_DATA_PATH];
-    ConfigMgr_ReadConfigPath(module, configindex, configpath, sizeof(configpath));
+    ConfigMgr_ReadString(module, configindex, ConfigData_Path, configpath, sizeof(configpath));
     
     decl String:fullconfigpath[PLATFORM_MAX_PATH];
     BuildPath(Path_SM, fullconfigpath, sizeof(fullconfigpath), configpath);
     
-    new Handle:hConfig = OpenFile(configpath, "r");
+    new Handle:hConfig = OpenFile(fullconfigpath, "r");
     if (hConfig == INVALID_HANDLE)
     {
         LogError("[Config Manager] Config file \"%s\" couldn't be loaded.", fullconfigpath);
@@ -372,7 +373,7 @@ stock Handle:ConfigMgr_CacheFile(Module:module, configindex, maxlen, &count = 0)
         }
         TrimString(line);
         
-        if (line[0] == 0)
+        if (!line[0])
             continue;
         
         // Push line into array.
@@ -408,7 +409,7 @@ stock ConfigMgr_ReloadConfigs(Module:module)
     // Call the reload func stored in the module's config data for each of its config files.
     for (new configindex = 0; configindex < CM_MODULE_MAX_CONFIGS; configindex++)
     {
-        if (configpaths[configindex][0] == 0)
+        if (reloadfuncs[configindex] == INVALID_FUNCTION)
             continue;
         
         Call_StartFunction(GetMyHandle(), reloadfuncs[configindex]);
@@ -426,13 +427,13 @@ stock ConfigMgr_ReloadConfigs(Module:module)
  */
 stock ConfigMgr_FindNextIndex(Module:module)
 {
-    new String:configpaths[CM_MODULE_MAX_CONFIGS][CM_DATA_PATH];
-    ConfigMgr_ReadStrings(module, ConfigData_Path, configpaths, CM_DATA_PATH);
+    new Function:reloadfuncs[CM_MODULE_MAX_CONFIGS];
+    ConfigMgr_ReadCells(module, ConfigData_ReloadFunc, reloadfuncs);
     
     // Loop through each config path index.
-    for (new cpindex = 0; cpindex < sizeof(configpaths); cpindex++)
+    for (new cpindex = 0; cpindex < sizeof(reloadfuncs); cpindex++)
     {
-        if (configpaths[cpindex][0] == 0)
+        if (reloadfuncs[cpindex] == INVALID_FUNCTION)
             return cpindex;
     }
     
