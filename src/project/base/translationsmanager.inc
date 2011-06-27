@@ -499,6 +499,7 @@ stock TransMgr_LoadTranslations()
                 LoadTranslations(transfilepath);
             }
         }
+        CloseHandle(hDir);
         LogMessage("[Translations Manager] Successfully loaded all translation files from %s", fulltransfilepath);
     #endif
     
