@@ -343,7 +343,10 @@ public GameEvent_RoundFreezeEnd(Handle:event, const String:name[], bool:dontBroa
 public GameEvent_RoundEnd(Handle:event, const String:name[], bool:dontBroadcast)
 {
     // Forward event to all modules.
-    EventMgr_Forward(g_EvRoundEnd, g_CommonEventData1, 0, 0, g_CommonDataType1);
+    new any:eventdata[1][1];
+    eventdata[0][0] = GetEventInt(event, "winner");
+    
+    EventMgr_Forward(g_EvRoundEnd, eventdata, sizeof(eventdata), sizeof(eventdata[]), g_CommonDataType2);
 }
 
 /**
