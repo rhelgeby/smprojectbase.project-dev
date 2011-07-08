@@ -489,7 +489,7 @@ stock Action:EventMgr_Forward(ProjectEvent:eventid, any:eventdata[][], numValues
                 case DataType_Array:        Call_PushArray(eventdata[x], size);
                 case DataType_ArrayRef:     Call_PushArrayEx(eventdata[x], size, SM_PARAM_COPYBACK);
                 case DataType_String:       Call_PushString(eventdata[x]);
-                case DataType_StringRef:    Call_PushStringEx(eventdata[x], size, 0, SM_PARAM_COPYBACK);
+                case DataType_StringRef:    Call_PushStringEx(eventdata[x], size, SM_PARAM_STRING_UTF8|SM_PARAM_STRING_COPY, SM_PARAM_COPYBACK);
             }
         }
         
