@@ -1,4 +1,4 @@
-"Phrases"
+﻿"Phrases"
 {
 	// Command: PROJECT_BASE_CMD log whitelist_add
 
@@ -6,7 +6,8 @@
 	"LogMgr basecmd log whitelist_add usage"
 	{
 		"#format"	"{1:s},{2:s}"
-		"en"		"Adds one or more modules to the whitelist.  Usage: {1} log whitelist_add <moduleshortname> [module2] ...\nRelated command(s): {2} log whitelist_add"
+		"en"		"Adds one or more modules to the whitelist.  Usage: {1} log whitelist_add <short module name>...\nRelated command(s): {2} log whitelist_add"
+		"no"		"Legger til en eller flere moduler til tillatelseslisten.  Syntaks: {1} log whitelist_add <kort modulnavn>...\nRelaterte kommandoer: {2} log whitelist_add"
 	}
 
 	// Command: <PROJECT_CMD_PREFIX>_log_whitelist_add
@@ -15,19 +16,22 @@
 	"LogMgr cmd whitelist_add usage"
 	{
 		"#format"	"{1:s},{2:s}"
-		"en"		"Adds one or more modules to the whitelist.  Usage: {1}_log_whitelist_add <moduleshortname> [module2] ...\nRelated command(s): {2}_log_whitelist_add"
+		"en"		"Adds one or more modules to the whitelist.  Usage: {1}_log_whitelist_add <short module name>...\nRelated command(s): {2}_log_whitelist_add"
+		"no"		"Legger til én eller flere moduler til tillatelseslisten.  Syntaks: {1}_log_whitelist_add <kort modulnavn>...\nRelaterte kommandoer: {2}_log_whitelist_add"
 	}
 
 	"LogMgr cmd whitelist_add"
 	{
 		"#format"	"{1:s}"
 		"en"		"Module \"{1}\" has been added to the whitelist."
+		"no"		"Modulen \"{1}\" har blitt lagt til tillatelseslisten."
 	}
 
 	"LogMgr cmd whitelist_add fail"
 	{
 		"#format"	"{1:s}"
 		"en"		"Module \"{1}\" is already in the whitelist."
+		"no"		"Modulen \"{1}\" er allerede i tillatelseslisten."
 	}
 	
 	// Command: PROJECT_BASE_CMD log whitelist_rem
@@ -36,7 +40,8 @@
 	"LogMgr basecmd log whitelist_rem usage"
 	{
 		"#format"	"{1:s},{2:s}"
-		"en"		"Removes one or more modules from the whitelist.  Usage: {1} log whitelist_rem <moduleshortname> [module2] ...\nRelated command(s): {2} log whitelist_rem"
+		"en"		"Removes one or more modules from the whitelist.  Usage: {1} log whitelist_rem <short module name>...\nRelated command(s): {2} log whitelist_rem"
+		"no"		"Fjerner én eller flere moduler fra tillatelseslisten.  Syntaks: {1} log whitelist_rem <kort modulnavn>...\nRelaterte kommandoer: {2} log whitelist_rem"
 	}
 
 	// Command: <PROJECT_CMD_PREFIX>_log_whitelist_rem
@@ -45,19 +50,22 @@
 	"LogMgr cmd whitelist_rem usage"
 	{
 		"#format"	"{1:s},{2:s}"
-		"en"		"Removes one or more modules from the whitelist.  Usage: {1}_log_whitelist_rem <moduleshortname> [module2] ...\nRelated command(s): {2}_log_whitelist_rem"
+		"en"		"Removes one or more modules from the whitelist.  Usage: {1}_log_whitelist_rem <short module name>...\nRelated command(s): {2}_log_whitelist_rem"
+		"no"		"Fjerner én eller flere moduler fra tillatelseslisten.  Syntaks: {1}_log_whitelist_rem <kort modulnavn>...\nRelaterte kommandoer: {2}_log_whitelist_rem"
 	}
 
 	"LogMgr cmd whitelist_rem"
 	{
 		"#format"	"{1:s}"
 		"en"		"Module \"{1}\" has been removed from the whitelist."
+		"no"		"Modulen \"{1}\" har blitt fjernet fra tillatelseslisten."
 	}
 
 	"LogMgr cmd whitelist_rem fail"
 	{
 		"#format"	"{1:s}"
 		"en"		"Module \"{1}\" is not in the whitelist."
+		"no"		"Modulen \"{1}\" finnes ikke i tillatelseslisten."
 	}
 
 }
